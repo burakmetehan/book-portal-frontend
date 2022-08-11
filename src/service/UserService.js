@@ -13,8 +13,6 @@ const UserService = (function () {
 
     if (!response) {
       console.log("Bir hata oluştu");
-      //ToDo: Display error message to user not just log it
-      //Ex: https://www.npmjs.com/package/react-toastify
       return;
     }
 

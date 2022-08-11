@@ -1,6 +1,7 @@
 import React from "react";
 import { _addBook, _searchAll, _searchById, _searchByName } from "../service/BookService";
 import { Table } from "antd";
+import { Col, Row, Space } from 'antd';
 
 const columns = [
   {
@@ -175,15 +176,36 @@ class Admin extends React.Component {
   render() {
     const { bordered, data, pagination, loading, isSearchedAll } = this.state;
     return (
-      <Table
-        bordered={bordered}
-        columns={columns}
-        dataSource={data}
-        rowKey={(record) => record.id}
-        loading={loading}
-        pagination={pagination}
-        onChange={this.handleTableChange}
-      />);
+      <>
+        <Row>
+          <Space>
+            <Col span={12}>
+              <Table
+                bordered={bordered}
+                columns={columns}
+                dataSource={data}
+                rowKey={(record) => record.id}
+                loading={loading}
+                pagination={pagination}
+                onChange={this.handleTableChange}
+              />
+            </Col>
+
+            <Col span={12}>
+              <Table
+                bordered={bordered}
+                columns={columns}
+                dataSource={data}
+                rowKey={(record) => record.id}
+                loading={loading}
+                pagination={pagination}
+                onChange={this.handleTableChange}
+              />
+            </Col>
+          </Space>
+        </Row>
+      </>
+    );
   }
 }
 

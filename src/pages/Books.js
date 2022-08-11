@@ -76,7 +76,7 @@ class BookList extends React.Component {
   searchAll = async (params = {
     pagination: {
       pageSize: 1,
-      current:1
+      current: 1
     }
   }) => {
     this.setState({ loading: true });
@@ -207,7 +207,6 @@ class BookList extends React.Component {
             </Form.Item>
           </Space>
         </Form>
-
 
         <Table
           bordered={bordered}

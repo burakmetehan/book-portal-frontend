@@ -46,7 +46,7 @@ const Home = () => {
 
   if (authenticated) {
     if (isAdmin) {
-      
+
       ret =
         <>
           <h1>Hello {localStorage.getItem('username')}</h1>
@@ -72,7 +72,6 @@ const Home = () => {
     }
 
   } else {
-    // Not logged in, go and login. and a button to login
     ret =
       <>
         <Breadcrumb style={{ margin: "16px 0" }}>
