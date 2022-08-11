@@ -1,25 +1,34 @@
 import { Form, Input, Button } from "antd";
-import { useState } from "react";
-import { Breadcrumb } from "antd";
+import { useEffect, useState } from "react";
+import { Layout, Menu, Breadcrumb } from "antd";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import HomeService from "../service/HomeService";
 
 const Home = () => {
-  //const history = useHistory();
   const [credentials, setCredentials] = useState({});
   const [authenticated, setAuthenticated] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  //var isAuthenticated = false;
+  useEffect(() => {
+    if (localStorage.getItem('Authorization')) {
+      setAuthenticated(true);
+    }
 
+    if (localStorage.getItem('isAdmin')) {
+      setIsAdmin(true);
+    }
+  })
   const onFinish = async values => {
     var flag = await HomeService({ values });
     if (flag) {
       setAuthenticated(true);
+      setIsAdmin(localStorage.getItem('isAdmin'));
       console.log("Success");
     } else {
       setAuthenticated(false);
+      setIsAdmin(false);
       console.log("Fail");
     }
-    //setTimeout(() => history.push("/users"));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -36,8 +45,32 @@ const Home = () => {
   let ret;
 
   if (authenticated) {
-    // Welcome
-    ret = <h1>Hello Bitch</h1>;
+    if (isAdmin) {
+      
+      ret =
+        <>
+          <h1>Hello {localStorage.getItem('username')}</h1>
+
+          <Form
+            name="basic"
+            onFinish={() => { console.log("Admin Panel") }}
+          >
+            <Form.Item
+              wrapperCol={{
+                offset: 8,
+                span: 16
+              }}
+            >
+              <Button type="primary" htmlType="submit">
+                Admin Panel
+              </Button>
+            </Form.Item>
+          </Form>
+        </>
+    } else {
+      ret = <h1>Hello {localStorage.getItem('username')}</h1>
+    }
+
   } else {
     // Not logged in, go and login. and a button to login
     ret =

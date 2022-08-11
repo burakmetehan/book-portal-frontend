@@ -1,0 +1,81 @@
+{
+    "content": [
+        {
+            "id": 10,
+            "createDate": "2022-08-04T14:51:26.853+00:00",
+            "updateDate": "2022-08-04T14:51:26.853+00:00",
+            "active": true,
+            "operationType": "SAVE",
+            "name": "Crime and Punishment",
+            "author": "Dostoyevski",
+            "pageCount": 673,
+            "type": "Novel",
+            "publisher": "Some Publisher",
+            "publicationDate": "2016-07-15T00:00:00.000+00:00"
+        },
+        {
+            "id": 11,
+            "createDate": "2022-08-10T12:55:26.259+00:00",
+            "updateDate": "2022-08-10T12:55:26.259+00:00",
+            "active": true,
+            "operationType": "SAVE",
+            "name": "Crime and Punishment",
+            "author": "Dostoyevski",
+            "pageCount": 673,
+            "type": "Novel",
+            "publisher": "Some Publisher",
+            "publicationDate": "2016-07-15T00:00:00.000+00:00"
+        },
+        {
+            "id": 12,
+            "createDate": "2022-08-10T13:06:13.337+00:00",
+            "updateDate": "2022-08-10T13:06:13.337+00:00",
+            "active": true,
+            "operationType": "SAVE",
+            "name": "Crime and Punishment",
+            "author": "Dostoyevski",
+            "pageCount": 673,
+            "type": "Novel",
+            "publisher": "Some Publisher",
+            "publicationDate": "2016-07-15T00:00:00.000+00:00"
+        },
+        {
+            "id": 13,
+            "createDate": "2022-08-10T13:08:17.634+00:00",
+            "updateDate": "2022-08-10T13:08:17.634+00:00",
+            "active": true,
+            "operationType": "SAVE",
+            "name": "Crime and Punishment",
+            "author": "Dostoyevski",
+            "pageCount": 673,
+            "type": "Novel",
+            "publisher": "Some Publisher",
+            "publicationDate": "2016-07-15T00:00:00.000+00:00"
+        }
+    ],
+    "pageable": {
+        "sort": {
+            "empty": true,
+            "sorted": false,
+            "unsorted": true
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 10,
+        "paged": true,
+        "unpaged": false
+    },
+    "last": true,
+    "totalElements": 4,
+    "totalPages": 1,
+    "size": 10,
+    "number": 0,
+    "sort": {
+        "empty": true,
+        "sorted": false,
+        "unsorted": true
+    },
+    "first": true,
+    "numberOfElements": 4,
+    "empty": false
+}

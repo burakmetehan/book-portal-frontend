@@ -3,8 +3,6 @@ import Cookies from 'universal-cookie';
 
 export default function HomeService({ values }) {
 
-  const cookies = new Cookies();
-
   var axios = require('axios');
   var data = JSON.stringify({
     "username": values.username,
@@ -20,12 +18,11 @@ export default function HomeService({ values }) {
     data: data
   };
 
-  console.log("HomeService continue");
-
   return axios(config)
     .then(function (response) {
-      cookies.set('Authorization', 'Bearer ' + response.data.token, { path: "/" });
       localStorage.setItem('Authorization', 'Bearer ' + response.data.token);
+      localStorage.setItem('isAdmin', response.data.admin);
+      localStorage.setItem('username', response.data.username);
       return true;
     })
     .catch(function (error) {
