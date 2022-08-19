@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 
-import {
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-  Button,
-  Descriptions
-} from "antd";
-
+import BookDescription from "./BookDescription";
 import BookForm from "./BookForm";
+
 
 export default function AddBook() {
 
@@ -44,27 +37,9 @@ export default function AddBook() {
 
   return (
     <div>
-      <BookForm bookData={bookData} handleBookChange={onBookDataChange} onFormFinish={onBookFormFinish} />
+      <BookForm bookData={bookData} onBookDataChange={onBookDataChange} onFormFinish={onBookFormFinish} />
 
-      <Descriptions
-        title="Book Info"
-        bordered
-        column={{
-          xxl: 4,
-          xl: 3,
-          lg: 3,
-          md: 3,
-          sm: 2,
-          xs: 1,
-        }}
-      >
-        <Descriptions.Item label="Book Name">{bookData.name || "Book Name"}</Descriptions.Item>
-        <Descriptions.Item label="Author">{bookData.author || "Author"}</Descriptions.Item>
-        <Descriptions.Item label="Page Count">{bookData.pageCount || "Page Count"}</Descriptions.Item>
-        <Descriptions.Item label="Type">{bookData.type || "Type"}</Descriptions.Item>
-        <Descriptions.Item label="Publisher">{bookData.publisher || "Publisher"}</Descriptions.Item>
-        <Descriptions.Item label="Publication Date">{bookData.publicationDate || "Publication Date"}</Descriptions.Item>
-      </Descriptions>
+      <BookDescription bookData={bookData} />
     </div>
   );
 };
