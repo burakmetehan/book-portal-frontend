@@ -17,11 +17,6 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
     setComponentSize(size);
   };
 
-  function onBookFormFinish(values) {
-    console.log("Submit");
-    console.log(bookData);
-  }
-
   return (
     <Form
       labelCol={{
