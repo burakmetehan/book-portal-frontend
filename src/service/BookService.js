@@ -114,3 +114,28 @@ export function _addBook({
       return;
     });
 }
+
+export function _deleteBook({ bookId }) {
+
+  var axios = require('axios');
+
+  var config = {
+    method: 'delete',
+    url: `http://localhost:8080/books/${bookId}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('Authorization')
+    }
+  };
+
+  return axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+      return response.data;
+    })
+    .catch(function (error) {
+      console.log("Error in BookService!");
+      return error;
+    });
+}
+

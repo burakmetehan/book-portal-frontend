@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "antd/dist/antd.css";
 
-import { _searchById, _deleteBook } from "../../service/BookService";
+import { _searchAll, _searchById, _deleteBook } from "../../service/BookService";
 
 import { Form, InputNumber, Button, Popconfirm, Table } from "antd";
 
@@ -63,6 +63,30 @@ export default function DeleteBook() {
       publicationDate: "1965-08-01"
     }
   ]);
+
+  useEffect( () => {
+    async function searchAll () {
+      const data = await _searchAll({
+        pageSize: 5,
+        pageNumber: 0
+      });
+
+      const newContent = data.content.map((book) => {
+        return (
+          {
+            ...book,
+            key: book.id,
+            publicationDate: book.publicationDate.slice(0, 10)
+          }
+        );
+      });
+  
+      setBookData(newContent);
+    };
+
+    searchAll();
+        
+  }, []);
 
   const [bookId, setBookId] = useState(0);
 
