@@ -4,8 +4,11 @@ import "antd/dist/antd.css";
 import BookDescription from "./BookDescription";
 import BookForm from "./BookForm";
 
+import { _addBook } from "../../service/BookService";
+
 export default function AddBook() {
 
+  const [isSuccessful, setIsSuccessful] = useState(false);
   const [bookData, setBookData] = useState(
     {
       name: "",
@@ -29,16 +32,34 @@ export default function AddBook() {
   }
 
   // @todo
-  function onBookFormFinish(values) {
-    console.log("Submit");
-    console.log(bookData);
+  async function onBookFormFinish() {
+
+    const data = await _addBook(bookData);
+
+    if (true) { // Succesfull
+      setIsSuccessful(true);
+    } else { // Not successful
+
+    }
+  }
+
+  function onBookFormFail() {
+    window.alert("Please, fill the all necessary fields!")
   }
 
   return (
     <div>
-      <BookForm bookData={bookData} onBookDataChange={onBookDataChange} onFormFinish={onBookFormFinish} />
+      <BookForm
+        bookData={bookData}
+        onBookDataChange={onBookDataChange}
+        onBookFormFinish={onBookFormFinish}
+        onBookFormFail={onBookFormFail}
+      />
 
-      <BookDescription bookData={bookData} />
+      {
+        isSuccessful ? <BookDescription bookData={bookData} /> : null
+      }
+
     </div>
   );
 };

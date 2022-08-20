@@ -9,7 +9,7 @@ import {
   Button,
 } from "antd";
 
-export default function BookForm({ bookData, onBookDataChange, onBookFormFinish }) {
+export default function BookForm({ bookData, onBookDataChange, onBookFormFinish, onBookFormFail }) {
 
   const [componentSize, setComponentSize] = useState("default");
 
@@ -32,7 +32,7 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
       onValuesChange={onFormLayoutChange}
       size={componentSize}
       onFinish={onBookFormFinish}
-      onFinishFailed={onBookFormFinish}
+      onFinishFailed={onBookFormFail}
     >
       <Form.Item label="Form Size" name="size">
         <Radio.Group>
@@ -41,11 +41,16 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
           <Radio.Button value="large">Large</Radio.Button>
         </Radio.Group>
       </Form.Item>
-      <Form.Item label="Name" onChange={onBookDataChange} rules={[
-        {
-          required: true,
-          message: 'Please input your username!',
-        }]}>
+
+      <Form.Item
+        label="Book Name"
+        name="name"
+        onChange={onBookDataChange}
+        rules={[
+          {
+            required: true,
+            message: 'Please input book name!',
+          }]}>
         <Input
           id="name"
           name="name"
@@ -54,7 +59,17 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
         />
       </Form.Item>
 
-      <Form.Item label="Author" onChange={onBookDataChange}>
+      <Form.Item
+        label="Author"
+        name="author"
+        onChange={onBookDataChange}
+        rules={[
+          {
+            required: true,
+            message: 'Please input author name!'
+          }
+        ]}
+      >
         <Input
           id="author"
           name="author"
@@ -63,7 +78,17 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
         />
       </Form.Item>
 
-      <Form.Item label="Page Count" onChange={onBookDataChange}>
+      <Form.Item
+        label="Page Count"
+        name="pageCount"
+        onChange={onBookDataChange}
+        rules={[
+          {
+            required: true,
+            message: 'Please input page count!'
+          }
+        ]}
+      >
         <InputNumber
           min={0}
           id="pageCount"
@@ -74,7 +99,17 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
         />
       </Form.Item>
 
-      <Form.Item label="Type" onChange={onBookDataChange}>
+      <Form.Item
+        label="Type"
+        name="type"
+        onChange={onBookDataChange}
+        rules={[
+          {
+            required: true,
+            message: 'Please input type!'
+          }
+        ]}
+      >
         <Input
           id="type"
           name="type"
@@ -83,7 +118,16 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
         />
       </Form.Item>
 
-      <Form.Item label="Publisher" onChange={onBookDataChange}>
+      <Form.Item
+        label="Publisher"
+        name="publisher"
+        onChange={onBookDataChange}
+        rules={[
+          {
+            required: true,
+            message: 'Please input publisher!'
+          }
+        ]}>
         <Input
           id="publisher"
           name="publisher"
@@ -92,7 +136,17 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish 
         />
       </Form.Item>
 
-      <Form.Item label="Publication Date" onChange={onBookDataChange}>
+      <Form.Item
+        label="Publication Date"
+        name="publicationDate"
+        onChange={onBookDataChange}
+        rules={[
+          {
+            required: true,
+            message: 'Please choose publication date!'
+          }
+        ]}
+      >
         <Input
           type="date"
           id="publicationDate"
