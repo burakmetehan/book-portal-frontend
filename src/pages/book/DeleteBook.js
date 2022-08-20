@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import "antd/dist/antd.css";
 
-import { _searchById } from "../../service/BookService";
+import { _searchById, _deleteBook } from "../../service/BookService";
 
-import { Button, Popconfirm, Table } from "antd";
+import { Form, InputNumber, Button, Popconfirm, Table } from "antd";
 
 export default function DeleteBook() {
   const columns = [
@@ -36,7 +36,7 @@ export default function DeleteBook() {
       dataIndex: 'operation',
       render: (_, record) =>
         bookData.length >= 1 ? (
-          <Popconfirm title="Are you sure to delete?" onConfirm={() => handleDelete(record.key)}>
+          <Popconfirm title="Are you sure to delete?" onConfirm={() => handleDelete(record.key, record)}>
             <a>Delete</a>
           </Popconfirm>
         ) : null,
@@ -64,13 +64,81 @@ export default function DeleteBook() {
     }
   ]);
 
-  const handleDelete = (key) => {
+  const [bookId, setBookId] = useState(0);
+
+  async function handleDelete(key) {
+    // make DB call by key
+    const data = await _deleteBook({ bookId: key });
+
+    console.log(data);
+
+    if (data.name == "AxiosError") { // Error
+      window.alert("Book is not Found")
+      return;
+    }
+
+    // Deleted
+    // Can be changed later according to return object
     const newBookData = bookData.filter((item) => item.key !== key);
     setBookData(newBookData);
   };
 
+
+  async function onSearch() {
+    if (bookId < 0) {
+      // Make this part inside input by using min and message
+      window.alert("Book Id should be greater than or equal 0")
+      return;
+    }
+
+    const data = await _searchById({ bookId });
+
+    if (data.empty) { // Not Found
+      setBookData([]);
+      return;
+    }
+
+    // Found
+    // Can be changed later according to return object
+    const newContent = data.content.map((book) => {
+      return (
+        {
+          ...book,
+          key: book.id,
+          publicationDate: book.publicationDate.slice(0, 10)
+        }
+      );
+    });
+
+    setBookData(newContent);
+  }
+
+  function onBookIdChange(newId) {
+    console.log(newId);
+    setBookId(newId);
+  }
+
   return (
     <div>
+      <Form
+        onFinish={onSearch}>
+        <Form.Item
+          label="Search By Id"
+          name="bookId"
+        >
+          <InputNumber
+            min={0}
+            id="bookId"
+            name="bookId"
+            value={bookId}
+            onChange={onBookIdChange}
+          />
+        </Form.Item>
+
+        <Button type="primary" htmlType="submit">
+          Search
+        </Button>
+      </Form>
       <Table
         bordered
         dataSource={bookData}
