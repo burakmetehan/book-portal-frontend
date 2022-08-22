@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import "antd/dist/antd.css";
 
-import { _searchAll, _searchById, _deleteBook } from "../../service/BookService";
+import { _searchAll, _searchById, _searchByName, _deleteBook } from "../../service/BookService";
 
-import { Form, InputNumber, Button, Popconfirm, Table } from "antd";
+import { Form, Input, InputNumber, Button, Popconfirm, Table } from "antd";
 
 export default function DeleteBook() {
   const columns = [
@@ -64,10 +64,13 @@ export default function DeleteBook() {
     }
   ]);
 
-  useEffect( () => {
-    async function searchAll () {
+  const [bookId, setBookId] = useState(0);
+  const [bookName, setBookName] = useState("");
+
+  useEffect(() => {
+    async function searchAll() {
       const data = await _searchAll({
-        pageSize: 5,
+        pageSize: 10,
         pageNumber: 0
       });
 
@@ -80,15 +83,16 @@ export default function DeleteBook() {
           }
         );
       });
-  
+
+      console.log(bookData);
       setBookData(newContent);
     };
 
     searchAll();
-        
-  }, []);
 
-  const [bookId, setBookId] = useState(0);
+  }, [bookId != null]);
+
+
 
   async function handleDelete(key) {
     // make DB call by key
@@ -142,6 +146,41 @@ export default function DeleteBook() {
     setBookId(newId);
   }
 
+  async function onSearchName() {
+    if (bookName === "" || bookName == null) {
+      window.alert("Book Name is not right")
+      return;
+    }
+
+    const data = await _searchByName({ bookName });
+
+    if (data.empty) { // Not Found
+      setBookData([]);
+      return;
+    }
+
+    // Found
+    // Can be changed later according to return object
+    const newContent = data.content.map((book) => {
+      return (
+        {
+          ...book,
+          key: book.id,
+          publicationDate: book.publicationDate.slice(0, 10)
+        }
+      );
+    });
+
+    setBookData(newContent);
+  }
+
+  function onBookNameChange(event) {
+    const { value } = event.target;
+    setBookName(value);
+  }
+
+
+
   return (
     <div>
       <Form
@@ -163,6 +202,27 @@ export default function DeleteBook() {
           Search
         </Button>
       </Form>
+
+      <Form
+        onFinish={onSearchName}>
+        <Form.Item
+          label="Search By Name"
+          name="bookName"
+        >
+          <Input
+            id="bookName"
+            name="bookName"
+            value={bookId}
+            onChange={onBookNameChange}
+          >
+          </Input>
+        </Form.Item>
+
+        <Button type="primary" htmlType="submit">
+          Search
+        </Button>
+      </Form>
+
       <Table
         bordered
         dataSource={bookData}
