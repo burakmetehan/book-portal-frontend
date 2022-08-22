@@ -90,7 +90,7 @@ export default function DeleteBook() {
 
     searchAll();
 
-  }, [bookId != null]);
+  }, [bookId != null, bookName !== ""]);
 
 
 

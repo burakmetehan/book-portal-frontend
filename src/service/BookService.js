@@ -50,6 +50,11 @@ export function _searchById({ bookId }) {
     });
 }
 
+/**
+ * Searching books that contains the given bookName.
+ * @param {String} bookName Name of the book(s) to be searched
+ * @returns Paged book(s)
+ */
 export function _searchByName({ bookName }) {
 
   var axios = require('axios');
