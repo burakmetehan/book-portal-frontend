@@ -5,11 +5,11 @@ import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import { Layout, Menu, Breadcrumb } from "antd";
-import Home from "./pages/Home";
-import Users from "./pages/Users";
-import Books from "./pages/Books";
-import Admin from "./pages/Admin";
-import MyHeader from "./MyHeader";
+//import Home from "./pages/Home";
+//import Users from "./pages/Users";
+//import Books from "./pages/Books";
+//import Admin from "./pages/Admin";
+//import MyHeader from "./MyHeader";
 
 const { Header, Content, Footer } = Layout;
 
@@ -81,6 +81,7 @@ const { Header, Content, Footer } = Layout;
 
 export default function App() {
   return (
-    <MyHeader />
+    //<MyHeader />
+    <h1>App.js</h1>
   )
 }

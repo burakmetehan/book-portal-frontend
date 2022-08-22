@@ -31,7 +31,6 @@ export default function AddBook() {
     ));
   }
 
-  // @todo
   async function onBookFormFinish() {
 
     const data = await _addBook(bookData);

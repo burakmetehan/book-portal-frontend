@@ -1,8 +1,9 @@
 import React from "react";
 
-import { Table, Collapse } from "antd";
+import { Table, Collapse, Button } from "antd";
+import { _deleteUser } from "../../service/UserService";
 
-export default function UserCollapse({ user }) {
+export default function UserCollapse({ user, handleDelete }) {
   const { Panel } = Collapse;
 
   const bookColumns = [
@@ -55,16 +56,18 @@ export default function UserCollapse({ user }) {
             {
               user.roles &&
               <ul>
-              {
-                user.roles.map((item) => {
-                  return <li key={item.id}>{item.name}</li>
-                })
-              }
-            </ul>
+                {
+                  user.roles.map((item) => {
+                    return <li key={item.id}>{item.name}</li>
+                  })
+                }
+              </ul>
             }
-            
           </Panel>
         </Collapse>
+        <Button type="primary" htmlType="submit" onClick={() => handleDelete(user.id)}>
+          Delete
+        </Button>
       </Panel>
     </Collapse>
   )

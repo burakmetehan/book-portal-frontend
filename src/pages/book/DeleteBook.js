@@ -212,7 +212,7 @@ export default function DeleteBook() {
           <Input
             id="bookName"
             name="bookName"
-            value={bookId}
+            value={bookName}
             onChange={onBookNameChange}
           >
           </Input>
