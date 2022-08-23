@@ -1,44 +1,40 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 
-import BookDescription from "./BookDescription";
 import BookForm from "./BookForm";
+import BookDescription from "./BookDescription";
 
 import { _addBook } from "../../service/BookService";
 
 export default function AddBook() {
 
   const [isSuccessful, setIsSuccessful] = useState(false);
-  const [bookData, setBookData] = useState(
-    {
-      name: "",
-      author: "",
-      pageCount: "",
-      type: "",
-      publisher: "",
-      publicationDate: ""
-    }
-  );
+  const [bookData, setBookData] = useState({
+    name: "",
+    author: "",
+    pageCount: "",
+    type: "",
+    publisher: "",
+    publicationDate: ""
+  });
 
+  /* ========== Event Listener Functions ========== */
   function onBookDataChange(event) {
     const { name, value } = event.target;
 
-    setBookData((prevBookData) => (
-      {
-        ...prevBookData,
-        [name]: value
-      }
-    ));
+    setBookData((prevBookData) => ({
+      ...prevBookData,
+      [name]: value
+    }));
   }
 
   async function onBookFormFinish() {
-
     const data = await _addBook(bookData);
 
-    if (true) { // Succesfull
+    if (data.successful) {
       setIsSuccessful(true);
-    } else { // Not successful
-
+    } else {
+      setIsSuccessful(false);
     }
   }
 

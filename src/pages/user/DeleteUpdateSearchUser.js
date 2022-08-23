@@ -50,7 +50,7 @@ export default function DeleteUpdateSearchUser() {
 
   async function onUserSearchById() {
     if (userId < 0) {
-      window.alert("Check Book Id. Book Id should be greater than or equal 0!")
+      window.alert("Check User Id. User Id should be greater than or equal 0!")
       return;
     }
 
@@ -69,7 +69,7 @@ export default function DeleteUpdateSearchUser() {
 
   async function onUserSearchByName() {
     if (username === "" || username == null) {
-      window.alert("Check Book Name. Username should bve provided!")
+      window.alert("Check Username. Username should be provided!")
       return;
     }
 

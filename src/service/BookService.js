@@ -167,10 +167,24 @@ export function _searchBookByName({ bookName }) {
     });
 }
 
-export function _updateBook() {
-  // @TODO
+export function _updateBook({ bookId, pageCount, publisher, publicationDate }) {
 
-  return false;
+  var axios = require('axios');
+  var data = JSON.stringify({
+    "pageCount": pageCount,
+    "publisher": publisher,
+    "publicationDate": publicationDate
+  });
+
+  var config = {
+    method: 'put',
+    url: `http://localhost:8080/books/${bookId}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('Authorization')
+    },
+    data: data
+  };
 
   return axios(config)
     .then(function (response) {

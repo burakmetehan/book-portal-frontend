@@ -7,7 +7,7 @@ export default function UserCollapse({ user, handleDelete, handleUpdate }) {
 
   const [isUpdateUser, setIsUpdateUser] = useState(false);
 
-  function onFinish({ password }) {
+  function onUserUpdateFormFinish({ password }) {
     handleUpdate(user.key, password);
     setIsUpdateUser(false);
     window.alert("User is updated");
@@ -68,7 +68,7 @@ export default function UserCollapse({ user, handleDelete, handleUpdate }) {
           </Button>
         </Space>
 
-        {isUpdateUser && <UserEditForm onFinish={onFinish} />}
+        {isUpdateUser && <UserUpdateForm onFinish={onUserUpdateFormFinish} />}
       </Panel>
     </Collapse>
   );
@@ -101,7 +101,7 @@ const bookColumns = [
   }
 ];
 
-function UserEditForm({ onFinish }) {
+function UserUpdateForm({ onFinish }) {
   const [form] = Form.useForm();
 
   return (
