@@ -31,14 +31,13 @@ export default function UserContentParser(responseData) {
       }
     });
 
-    return {
+    return ({
       key: user.id,
       username: user.username,
       readList: readList,
       favoriteList: favoriteList,
       roles: roles
-    }
-
+    });
   });
 
   return newContent;

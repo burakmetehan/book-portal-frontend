@@ -1,41 +1,13 @@
 import React, { useState } from "react";
+import { Table, Collapse, Button, Space, Form, Input, Popconfirm } from "antd";
 
-import { Table, Collapse, Button, Space, Form, Input, Select, Popconfirm } from "antd";
-import { _deleteUser } from "../../service/UserService";
+const { Panel } = Collapse;
 
 export default function UserCollapse({ user, handleDelete, handleUpdate }) {
-  const { Panel } = Collapse;
-
-  const bookColumns = [
-    {
-      title: 'Book Name',
-      dataIndex: 'name',
-    },
-    {
-      title: 'Author',
-      dataIndex: 'author',
-    },
-    {
-      title: 'Page Count',
-      dataIndex: 'pageCount',
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-    },
-    {
-      title: 'Publisher',
-      dataIndex: 'publisher',
-    },
-    {
-      title: 'Publication Date',
-      dataIndex: 'publicationDate',
-    }
-  ];
 
   const [isUpdateUser, setIsUpdateUser] = useState(false);
 
-  function onFinish({password}) {
+  function onFinish({ password }) {
     handleUpdate(user.key, password);
     setIsUpdateUser(false);
     window.alert("User is updated");
@@ -99,10 +71,37 @@ export default function UserCollapse({ user, handleDelete, handleUpdate }) {
         {isUpdateUser && <UserEditForm onFinish={onFinish} />}
       </Panel>
     </Collapse>
-  )
+  );
 }
 
-function UserEditForm({onFinish}) {
+const bookColumns = [
+  {
+    title: 'Book Name',
+    dataIndex: 'name',
+  },
+  {
+    title: 'Author',
+    dataIndex: 'author',
+  },
+  {
+    title: 'Page Count',
+    dataIndex: 'pageCount',
+  },
+  {
+    title: 'Type',
+    dataIndex: 'type',
+  },
+  {
+    title: 'Publisher',
+    dataIndex: 'publisher',
+  },
+  {
+    title: 'Publication Date',
+    dataIndex: 'publicationDate',
+  }
+];
+
+function UserEditForm({ onFinish }) {
   const [form] = Form.useForm();
 
   return (

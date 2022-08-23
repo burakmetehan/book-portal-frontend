@@ -99,7 +99,7 @@ export default function DeleteUpdateSearchUser() {
     const newUserData = userData.filter((item) => item.key !== key);
 
     setUserData(newUserData);
-  };
+  }
 
   async function handleUpdate(key, password) {
     const data = await _updateUser({ userId: key, password: password })

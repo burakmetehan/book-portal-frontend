@@ -1,77 +1,55 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
+import { Form, Input, Button } from "antd";
 
 import { _addUser } from "../../service/UserService";
-
-import {
-  Form,
-  Input,
-  InputNumber,
-  Radio,
-} from "antd";
-
-import { Button, Checkbox } from 'antd';
 
 export default function AddUser() {
 
   const [isSuccessful, setIsSuccessful] = useState(false);
-  const [userData, setUserData] = useState(
-    {
-      username: "",
-      password: ""
-    }
-  );
+  const [userData, setUserData] = useState({
+    username: "",
+    password: ""
+  });
 
+  /* ========== Event Listener Functions ========== */
   async function onFinish() {
     const data = await _addUser(userData);
 
-    if (data !== false) {
+    if (data.successful) {
       setIsSuccessful(true);
     } else {
       setIsSuccessful(false);
     }
-  };
+  }
 
-  const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-  };
+  function onFinishFailed() {
+    window.alert("Error in Add User")
+  }
 
   function onUserDataChange(event) {
     const { name, value } = event.target;
 
-    setUserData((prevUserData) => (
-      {
-        ...prevUserData,
-        [name]: value
-      }
-    ));
+    setUserData((prevUserData) => ({
+      ...prevUserData,
+      [name]: value
+    }));
   }
 
+  /* ========== Return ========== */
   return (
-    <div>
+    <div className="add-user">
       <Form
-        name="basic"
-        labelCol={{
-          span: 8,
-        }}
-        wrapperCol={{
-          span: 16,
-        }}
-        initialValues={{
-          remember: true,
-        }}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
-        autoComplete="off"
       >
         <Form.Item
           label="Username"
           name="username"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your username!',
-            },
+          rules={[{
+            required: true,
+            message: 'Please input your username!'
+          },
           ]}
         >
           <Input
@@ -86,11 +64,10 @@ export default function AddUser() {
         <Form.Item
           label="Password"
           name="password"
-          rules={[
-            {
-              required: true,
-              message: 'Please input your password!',
-            },
+          rules={[{
+            required: true,
+            message: 'Please input your password!',
+          },
           ]}
         >
           <Input.Password
@@ -101,17 +78,6 @@ export default function AddUser() {
             onChange={onUserDataChange}
           />
         </Form.Item>
-
-        {/* <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      >
-        <Checkbox>Remember me</Checkbox>
-      </Form.Item> */}
 
         <Form.Item
           wrapperCol={{
