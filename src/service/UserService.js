@@ -19,11 +19,15 @@ export function _searchAll(pagination) {
 
   return axios(config)
     .then(function (response) {
-      return response.data;
+      return { 
+        successful: true, 
+        ...response.data 
+      };
     })
-    .catch(function (error) {
-      console.log("Error in BookService!");
-      return;
+    .catch(function () {
+      return { 
+        successful: false 
+      };
     });
 }
 
@@ -47,13 +51,15 @@ export function _addUser({ username, password }) {
 
   return axios(config)
     .then(function (response) {
-      console.log(response);
-      return response.data;
-      //console.log(JSON.stringify(response.data));
+      return { 
+        successful: true, 
+        ...response.data 
+      };
     })
-    .catch(function (error) {
-      console.log(error);
-      return false;
+    .catch(function () {
+      return { 
+        successful: false 
+      };
     });
 }
 
@@ -73,12 +79,15 @@ export function _deleteUser({ userId }) {
 
   return axios(config)
     .then(function (response) {
-      console.log(JSON.stringify(response.data));
-      return response.data;
+      return { 
+        successful: true, 
+        ...response.data 
+      };
     })
-    .catch(function (error) {
-      console.log("Error in BookService!");
-      return error;
+    .catch(function () {
+      return { 
+        successful: false 
+      };
     });
 }
 
@@ -100,11 +109,15 @@ export function _searchById({ userId }) {
 
   return axios(config)
     .then(function (response) {
-      return response.data;
+      return { 
+        successful: true, 
+        ...response.data 
+      };
     })
-    .catch(function (error) {
-      console.log("Error in BookService!");
-      return;
+    .catch(function () {
+      return { 
+        successful: false 
+      };
     });
 }
 
@@ -131,10 +144,47 @@ export function _searchByName({ username }) {
 
   return axios(config)
     .then(function (response) {
-      return response.data;
+      return { 
+        successful: true, 
+        ...response.data 
+      };
     })
-    .catch(function (error) {
-      console.log("Error in BookService!");
-      return;
+    .catch(function () {
+      return { 
+        successful: false 
+      };
     });
+}
+
+export function _updateUser({ userId, password }) {
+
+  var axios = require('axios');
+  var data = JSON.stringify({
+    'password': password
+  });
+
+  var config = {
+    method: 'put',
+    url: `http://localhost:8080/users/${userId}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('Authorization')
+    },
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return { 
+        successful: true, 
+        ...response.data 
+      };
+    })
+    .catch(function () {
+      return { 
+        successful: false 
+      };
+    });
+
+
 }

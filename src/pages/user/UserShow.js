@@ -3,11 +3,11 @@ import React from "react";
 import UserCollapse from "./UserCollapse";
 import { _searchAll } from "../../service/UserService";
 
-export default function UserShow({ users, handleDelete }) {
+export default function UserShow({ users, handleDelete, handleUpdate }) {
 
   return (
     users.map((user) => {
-      return (<UserCollapse user={user} handleDelete={handleDelete} />)
+      return (<UserCollapse user={user} handleDelete={handleDelete} handleUpdate={handleUpdate} />)
     })
   );
 }

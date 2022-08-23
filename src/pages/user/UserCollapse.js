@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
-import { Table, Collapse, Button } from "antd";
+import { Table, Collapse, Button, Space, Form, Input, Select, Popconfirm } from "antd";
 import { _deleteUser } from "../../service/UserService";
 
-export default function UserCollapse({ user, handleDelete }) {
+export default function UserCollapse({ user, handleDelete, handleUpdate }) {
   const { Panel } = Collapse;
 
   const bookColumns = [
@@ -33,9 +33,17 @@ export default function UserCollapse({ user, handleDelete }) {
     }
   ];
 
+  const [isUpdateUser, setIsUpdateUser] = useState(false);
+
+  function onFinish({password}) {
+    handleUpdate(user.key, password);
+    setIsUpdateUser(false);
+    window.alert("User is updated");
+  };
+
   return (
     <Collapse>
-      <Panel header={user.username} key={user.id}>
+      <Panel header={`${user.username}`} key={user.key}>
         <p>This is the data of {user.username}.</p>
         <Collapse ghost>
           <Panel header="Read List" key="readList">
@@ -65,10 +73,86 @@ export default function UserCollapse({ user, handleDelete }) {
             }
           </Panel>
         </Collapse>
-        <Button type="primary" htmlType="submit" onClick={() => handleDelete(user.id)}>
-          Delete
-        </Button>
+
+        <Space>
+          <Popconfirm
+            title="Are you sure to delete the user?"
+            onConfirm={() => handleDelete(user.key)}
+          >
+            <Button
+              type="primary"
+              htmlType="submit"
+            >
+              Delete User
+            </Button>
+          </Popconfirm>
+
+          <Button
+            type="primary"
+            htmlType="submit"
+            onClick={() => setIsUpdateUser(!isUpdateUser)}
+          >
+            {isUpdateUser ? 'Close' : 'Update User'}
+          </Button>
+        </Space>
+
+        {isUpdateUser && <UserEditForm onFinish={onFinish} />}
       </Panel>
     </Collapse>
   )
+}
+
+function UserEditForm({onFinish}) {
+  const [form] = Form.useForm();
+
+  return (
+    <Form
+      form={form}
+      name="updateUser"
+      onFinish={onFinish}
+      onFinishFailed={() => console.log("Fail")}
+    >
+      <Form.Item
+        name="password"
+        label="Password"
+        rules={[{
+          required: true,
+          message: "Please input your password!"
+        }]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item
+        name="confirm"
+        label="Confirm Password"
+        dependencies={["password"]}
+        rules={[
+          {
+            required: true,
+            message: "Please confirm your password!"
+          },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || getFieldValue("password") === value) {
+                return Promise.resolve();
+              }
+
+              return Promise.reject(
+                new Error("The two passwords that you entered do not match!")
+              );
+            }
+          })
+        ]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item>
+        <Button type="primary" htmlType="submit">
+          Change Password
+        </Button>
+      </Form.Item>
+    </Form>
+  );
 }

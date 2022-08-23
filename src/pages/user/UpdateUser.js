@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import 'antd/dist/antd.css';
-import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { _searchAll } from '../../service/UserService';
+import { Form, Input, InputNumber, Popconfirm, Table, Typography, Button } from 'antd';
+
+import { _searchAll, _deleteUser, _searchById, _searchByName } from '../../service/UserService';
+
+import UserCollapse from './UserCollapse';
+import UserShow from './UserShow';
 
 const originData = [];
 
@@ -14,48 +18,18 @@ for (let i = 0; i < 100; i++) {
 }
 
 export default function UpdateUser() {
-  const [form] = Form.useForm();
-  const [userData, setUserData] = useState(originData);
-  const [editingKey, setEditingKey] = useState('');
-  
+  const [userData, setUserData] = useState([
+    {
+      key: 0,
+      username: "",
+      readList: null,
+      favoriteList: null,
+      roles: null,
+    }
+  ]);
+
   const [userId, setUserId] = useState(0);
   const [username, setUsername] = useState("");
-
-  const isEditing = (record) => record.key === editingKey;
-
-  const edit = (record) => {
-    form.setFieldsValue({
-      username: '',
-      password: '',
-      ...record,
-    });
-    setEditingKey(record.key);
-  };
-
-  const cancel = () => {
-    setEditingKey('');
-  };
-
-  const save = async (key) => {
-    try {
-      const row = await form.validateFields();
-      const newUserData = [...userData];
-      const index = newUserData.findIndex((item) => key === item.key);
-
-      if (index > -1) {
-        const item = newUserData[index];
-        newUserData.splice(index, 1, { ...item, ...row });
-        setUserData(newUserData);
-        setEditingKey('');
-      } else {
-        newUserData.push(row);
-        setUserData(newUserData);
-        setEditingKey('');
-      }
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
-    }
-  };
 
   useEffect(() => {
     async function searchAllUsers() {
@@ -68,115 +42,124 @@ export default function UpdateUser() {
 
       setUserData(newContent);
     }
-    
+
     searchAllUsers();
   }, [userId != null, username !== ""])
 
-  const columns = [
-    {
-      title: 'Username',
-      dataIndex: 'username'
-    },
-    {
-      title: 'Password',
-      dataIndex: 'password',
-      editable: true,
-    },
-    {
-      title: 'Operation',
-      dataIndex: 'operation',
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.key)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              Save
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <a>Cancel</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Typography.Link disabled={editingKey !== ''} onClick={() => edit(record)}>
-            Edit
-          </Typography.Link>
-        );
-      },
-    },
-  ];
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col;
+  async function handleDelete(key) {
+    // make DB call by key
+    const data = await _deleteUser({ userId: key });
+
+    if (data.name == "AxiosError") { // Error
+      window.alert("User is not Found")
+      return;
     }
 
-    return {
-      ...col,
-      onCell: (record) => ({
-        record,
-        inputType: 'text',
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
-  return (
-    <Form form={form} component={false}>
-      <Table
-        components={{
-          body: {
-            cell: EditableCell,
-          },
-        }}
-        bordered
-        dataSource={userData}
-        columns={mergedColumns}
-        rowClassName="editable-row"
-        pagination={{
-          onChange: cancel,
-        }}
-      />
-    </Form>
-  );
-};
+    // Deleted
+    // Can be changed later according to return object
+    const newUserData = userData.filter((item) => item.key !== key);
+    setUserData(newUserData);
+  };
 
-const EditableCell = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+  async function onSearch() {
+    if (userId < 0) {
+      // Make this part inside input by using min and message
+      window.alert("Book Name should be greater than or equal 0")
+      return;
+    }
+
+    const data = await _searchById({ userId });
+
+    if (data.empty) { // Not Found
+      setUserData([]);
+      return;
+    }
+
+    // Found
+    // Can be changed later according to return object
+    const newContent = parseResponse(data);
+
+    setUserData(newContent);
+  }
+
+  function onUserIdChange(newId) {
+    setUserId(newId);
+  }
+
+  async function onSearchName() {
+    if (username === "" || username == null) {
+      window.alert("Username is not right")
+      return;
+    }
+
+    const data = await _searchByName({ username });
+
+    if (data.empty) { // Not Found
+      setUserData([]);
+      return;
+    }
+
+    // Found
+    // Can be changed later according to return object
+    const newContent = parseResponse(data);
+
+    setUserData(newContent);
+  }
+
+  function onUsernameChange(event) {
+    const { value } = event.target;
+    setUsername(value);
+  }
+
+  function handleEdit() {
+
+  }
+
   return (
-    <td {...restProps}>
-      {editing ? (
+    <div>
+      <Form
+        onFinish={onSearch}>
         <Form.Item
-          name={dataIndex}
-          style={{
-            margin: 0,
-          }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
+          label="Search By Id"
+          name="userId"
         >
-          {inputNode}
+          <InputNumber
+            min={0}
+            id="userId"
+            name="userId"
+            value={userId}
+            onChange={onUserIdChange}
+          />
         </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
+
+        <Button type="primary" htmlType="submit">
+          Search
+        </Button>
+      </Form>
+
+      <Form
+        onFinish={onSearchName}>
+        <Form.Item
+          label="Search By Name"
+          name="username"
+        >
+          <Input
+            id="username"
+            name="username"
+            value={username}
+            onChange={onUsernameChange}
+          >
+          </Input>
+        </Form.Item>
+
+        <Button type="primary" htmlType="submit">
+          Search
+        </Button>
+      </Form>
+
+      <br />
+      <UserShow users={userData} handleDelete={handleDelete} />
+    </div>
   );
 };
 
