@@ -34,7 +34,7 @@ export default function DeleteUser() {
 
       setUserData(newContent);
     }
-    
+
     searchAllUsers();
   }, [userId != null, username !== ""])
 
