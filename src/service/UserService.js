@@ -1,36 +1,3 @@
-import axios from "axios";
-//import LocalStorageService from "../../fetch-example/LocalStorageService";
-
-export function _searchAll(pagination) {
-
-  var axios = require('axios');
-  var data = JSON.stringify({
-  });
-
-  var config = {
-    method: 'get',
-    url: `http://localhost:8080/users?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
-    data: data
-  };
-
-  return axios(config)
-    .then(function (response) {
-      return { 
-        successful: true, 
-        ...response.data 
-      };
-    })
-    .catch(function () {
-      return { 
-        successful: false 
-      };
-    });
-}
-
 export function _addUser({ username, password }) {
   var axios = require('axios');
 
@@ -63,7 +30,6 @@ export function _addUser({ username, password }) {
     });
 }
 
-
 export function _deleteUser({ userId }) {
 
   var axios = require('axios');
@@ -91,7 +57,37 @@ export function _deleteUser({ userId }) {
     });
 }
 
-export function _searchById({ userId }) {
+export function _searchAllUsers(pagination) {
+
+  var axios = require('axios');
+  var data = JSON.stringify({
+  });
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/users?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('Authorization')
+    },
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return { 
+        successful: true, 
+        ...response.data 
+      };
+    })
+    .catch(function () {
+      return { 
+        successful: false 
+      };
+    });
+}
+
+export function _searchUserById({ userId }) {
 
   var axios = require('axios');
   var data = JSON.stringify({
@@ -126,7 +122,7 @@ export function _searchById({ userId }) {
  * @param {String} username Name of the users(s) to be searched
  * @returns Paged user(s)
  */
-export function _searchByName({ username }) {
+export function _searchUserByName({ username }) {
 
   var axios = require('axios');
   var data = JSON.stringify({
