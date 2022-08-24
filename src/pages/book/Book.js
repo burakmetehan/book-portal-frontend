@@ -19,7 +19,7 @@ const options = [
   },
   {
     label: 'Search Book',
-    value: 'Seach Book'
+    value: 'Search Book'
   }
 ];
 
