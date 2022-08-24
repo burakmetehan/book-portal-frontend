@@ -1,17 +1,67 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+
 import "./App.css";
 
+import Login from "./pages/auth/Login";
+import Logout from "./pages/auth/Logout";
+import Main from "./pages/Main"
+import { _checkAuth, _login } from "./service/AuthService";
 
-import React, { useEffect } from "react";
+axios.interceptors.request.use(
+  (config) => {
+    config.headers['Content-Type'] = 'application/json'
+    config.headers['Authorization'] = localStorage.getItem('Authorization');
+    return config;
+  },
+  (error) => {
+    Promise.reject(error);
+  }
+);
+
+
+export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    async function checkAuth() {
+      const responseData = await _checkAuth();
+
+      if (responseData.valid && responseData.token) {
+        localStorage.setItem('Authorization', 'Bearer ' + responseData.token);
+        setIsAuthenticated(true);
+      } else {
+        localStorage.clear();
+        setIsAuthenticated(false);
+      }
+    }
+
+    checkAuth();
+  }, [])
+
+  return (
+    <>
+      {
+        isAuthenticated ? <Main /> : <Login setIsAuthenticated={setIsAuthenticated} />
+      }
+    </>
+  )
+}
+
+
+
+
+/* import React, { useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
-import { Layout, Menu, Breadcrumb } from "antd";
+import { Layout, Menu, Breadcrumb } from "antd"; */
 //import Home from "./pages/Home";
 //import Users from "./pages/Users";
 //import Books from "./pages/Books";
 //import Admin from "./pages/Admin";
 //import MyHeader from "./MyHeader";
 
-const { Header, Content, Footer } = Layout;
+/* const { Header, Content, Footer } = Layout; */
 
 // export default function App() {
 //   return (
@@ -79,9 +129,10 @@ const { Header, Content, Footer } = Layout;
 //   );
 // }
 
-export default function App() {
+/* export default function App() {
   return (
     //<MyHeader />
     <h1>App.js</h1>
   )
 }
+ */

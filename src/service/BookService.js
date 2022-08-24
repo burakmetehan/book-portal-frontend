@@ -62,7 +62,7 @@ export function _deleteBook({ bookId }) {
       };
     })
     .catch(function () {
-      console.error("Error in adding book!")
+      console.error("Error in delete book!")
       return {
         successful: false
       };
@@ -82,7 +82,6 @@ export function _searchAllBook(pagination) {
     url: `http://localhost:8080/books?pageNumber=${pageNumber}&pageSize=${pageSize}`,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
     },
     data: data
   };
@@ -95,7 +94,7 @@ export function _searchAllBook(pagination) {
       };
     })
     .catch(function () {
-      console.error("Error in adding book!")
+      console.error("Error in search all book!")
       return {
         successful: false
       };
