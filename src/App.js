@@ -16,10 +16,26 @@ import { Breadcrumb, Layout, Menu } from 'antd';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Home from './pages/Home';
+import User from "./pages/user/User";
+import Book from "./pages/book/Book";
 
-import AddBook from './pages/book/AddBook';
+const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
+  const key = String(index + 1);
+  return {
+    key: `sub${key}`,
+    icon: React.createElement(icon),
+    label: `subnav ${key}`,
+    children: new Array(4).fill(null).map((_, j) => {
+      const subKey = index * 4 + j + 1;
+      return {
+        key: subKey,
+        label: `option${subKey}`,
+      };
+    }),
+  };
+});
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content, Footer, Sider } = Layout;
 
 axios.interceptors.request.use(
   (config) => {
@@ -32,59 +48,9 @@ axios.interceptors.request.use(
   }
 );
 
-
-/* export default function App() {
-  return (
-    <Router>
-      <Layout style={{ height: "100vh" }}>
-        <Header>
-          <div className="logo" />
-          <Menu
-            theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={['home']}
-          >
-            <Menu.Item key='home'>
-              <Link to="/">Home</Link>
-            </Menu.Item>
-            <Menu.Item key={'books'}>
-              <Link to="/books">Books</Link>
-            </Menu.Item>
-            <Menu.Item key='users'>
-              <Link to="/users">Users</Link>
-            </Menu.Item>
-          </Menu>
-        </Header>
-
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/books">
-            <Books />
-          </Route>
-          <Route path="/users">
-            <Users />
-          </Route>
-        </Switch>
-      </Layout>
-    </Router >
-  );
-}
-
-function Home() {
-  return <h2>Home</h2>;
-}
-
-function Books() {
-  return <h2>Books</h2>;
-}
-
-function Users() {
-  return <h2>Users</h2>;
-} */
-
 export default function App() {
+  const [collapsed, setCollapsed] = useState(false);
+  const [headerKey, setHeaderKey] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
@@ -113,58 +79,142 @@ export default function App() {
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={['home']}
+            selectedKeys={[headerKey]}
           >
             <Menu.Item key="home">
               <Link to="/">Home</Link>
             </Menu.Item>
-            <Menu.Item key="users">
-              <Link to="/users">Users</Link>
+            <Menu.Item key="user">
+              <Link to="/user">User</Link>
             </Menu.Item>
-            <Menu.Item key="books">
-              <Link to="/books">Books</Link>
+            <Menu.Item key="book">
+              <Link to="/book">Book</Link>
             </Menu.Item>
           </Menu>
         </Header>
 
-        <Content
-          className="site-layout"
-          style={{ padding: "0 50px", marginTop: 64 }}
-        >
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>Users</Breadcrumb.Item>
-            <Breadcrumb.Item>Books</Breadcrumb.Item>
-          </Breadcrumb>
-          <div
-            className="site-layout-background"
-            style={{ padding: 24, minHeight: 380 }}
+        <Layout>
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={(value) => setCollapsed(value)}
+          >
+            <div className="logo" />
+            <Menu
+              theme="dark"
+              defaultSelectedKeys={['1']}
+              mode="inline"
+              items={items2}
+            />
+          </Sider>
+
+          <Content
+            className="site-layout"
           >
             <Switch>
               <Route exact path="/">
-                <Home setIsAuthenticated={setIsAuthenticated} />
+                <Home setIsAuthenticated={setIsAuthenticated} setHeaderKey={setHeaderKey} />
               </Route>
-              <Route path="/users">
-                <User />
+              <Route path="/user">
+                <User setHeaderKey={setHeaderKey} />
               </Route>
-              <Route path="/books">
-                <AddBook />
+              <Route path="/book">
+                <Book setHeaderKey={setHeaderKey} />
               </Route>
             </Switch>
-          </div>
-        </Content>
+          </Content>
+        </Layout>
+
+
       </Layout>
     </Router >
   )
+
+  /*  return (
+     <Layout
+       style={{ height: '100vh' }}
+     >
+       <Header className="header">
+         <div className="logo" />
+         <Menu
+           theme="dark"
+           mode="horizontal"
+           defaultSelectedKeys={['home']}
+         >
+           <Menu.Item key="home">
+             <Link to="/">Home</Link>
+           </Menu.Item>
+           <Menu.Item key="users">
+             <Link to="/users">Users</Link>
+           </Menu.Item>
+           <Menu.Item key="books">
+             <Link to="/books">Books</Link>
+           </Menu.Item>
+         </Menu>
+       </Header>
+ 
+       <Layout>
+         <Sider
+           collapsible
+           collapsed={collapsed}
+           onCollapse={(value) => setCollapsed(value)}
+         >
+           <div className="logo" />
+           <Menu
+             theme="dark"
+             defaultSelectedKeys={['1']}
+             mode="inline"
+             items={items2}
+           />
+         </Sider>
+ 
+         <Layout
+           style={{
+             padding: '0 24px 24px',
+           }}
+         >
+           <Breadcrumb
+             style={{
+               margin: '16px 0',
+             }}
+           >
+             <Breadcrumb.Item>Home</Breadcrumb.Item>
+             <Breadcrumb.Item>List</Breadcrumb.Item>
+             <Breadcrumb.Item>App</Breadcrumb.Item>
+           </Breadcrumb>
+           <Content
+             className="site-layout-background"
+             style={{
+               padding: 24,
+               margin: 0,
+               minHeight: 280,
+             }}
+           >
+ 
+             <Switch>
+               <Route exact path="/">
+                 <Home setIsAuthenticated={setIsAuthenticated} />
+               </Route>
+               <Route path="/users">
+                 <User />
+               </Route>
+               <Route path="/books">
+                 <Book />
+               </Route>
+             </Switch>
+           </Content>
+         </Layout>
+       </Layout>
+     </Layout>); */
 }
 
-function Book() {
+/* function Book() {
   return <h1>Books</h1>
-}
+} */
 
-function User() {
+/* function User() {
   return <h1>USERS</h1>
-}
+} */
 
 /*
 return (
