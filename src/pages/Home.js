@@ -12,7 +12,10 @@ import FormItem from "antd/es/form/FormItem";
 const { Content } = Layout;
 const { Panel } = Collapse;
 
-export default function Home({ setIsAuthenticated }) {
+export default function Home({ setIsAuthenticated, setHeaderKey }) {
+  setHeaderKey('home');
+
+
   return (
     <Layout
       style={{
@@ -93,7 +96,7 @@ function HomeContent({ setIsAuthenticated }) {
   function HomeInfo() {
     return (
       <Card
-        title="User Info"
+        title={<HomeAvatar />}
         bordered={false}
       >
         <Descriptions
@@ -157,8 +160,6 @@ function HomeContent({ setIsAuthenticated }) {
         minHeight: 280,
       }}
     >
-
-      <HomeAvatar />
 
       <HomeInfo />
 
