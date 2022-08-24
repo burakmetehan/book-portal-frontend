@@ -152,11 +152,41 @@ export function _searchUserByName({ username }) {
     });
 }
 
-export function _updateUser({ userId, password }) {
+export function _searchUserByName2({ username }) {
 
   var axios = require('axios');
   var data = JSON.stringify({
-    'password': password
+  });
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/users/name?username=${username}`,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': localStorage.getItem('Authorization')
+    },
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return { 
+        successful: true, 
+        ...response.data 
+      };
+    })
+    .catch(function () {
+      return { 
+        successful: false 
+      };
+    });
+}
+
+export function _updateUser({ userId, newPassword }) {
+
+  var axios = require('axios');
+  var data = JSON.stringify({
+    'password': newPassword
   });
 
   var config = {

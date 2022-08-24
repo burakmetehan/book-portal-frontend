@@ -4,27 +4,14 @@ import 'antd/dist/antd.css';
 import { LaptopOutlined, NotificationOutlined, UserOutlined } from '@ant-design/icons';
 import { Breadcrumb, Layout, Menu } from 'antd';
 
-//import Login from './Login';
-import DeleteUpdateSearchBook from './book/DeleteUpdateSearchBook';
-import axios from 'axios';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 import { _checkAuth } from '../service/AuthService';
+import Home from './Home';
+
+import AddBook from './book/BookDescription';
 
 const { Header, Content, Sider } = Layout;
-
-const navBarItems = [
-  {
-    key: 'home',
-    label: 'Home'
-  },
-  {
-    key: 'users',
-    label: 'Users'
-  },
-  {
-    key: 'books',
-    label: 'Books'
-  },
-]
 
 // Sider items
 const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, index) => {
@@ -44,63 +31,118 @@ const items2 = [UserOutlined, LaptopOutlined, NotificationOutlined].map((icon, i
 });
 
 
-export default function Main() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+export default function Main({ setIsAuthenticated }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Layout
-      style={{ minHeight: '100vh' }}
-    >
-      <Header className="header">
-        <div className="logo" />
-        <Menu
-          theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={['home']}
-          items={navBarItems}
-        />
-      </Header>
-      <Layout>
-        <Sider
-          collapsible
-          collapsed={collapsed}
-          onCollapse={(value) => setCollapsed(value)}
-        >
+    <Router>
+      <Layout
+        style={{ height: '100vh' }}
+      >
+        <Header className="header">
           <div className="logo" />
           <Menu
             theme="dark"
-            defaultSelectedKeys={['1']}
-            mode="inline"
-            items={items2}
-          />
-        </Sider>
-        <Layout
-          style={{
-            padding: '0 24px 24px',
-          }}
+            mode="horizontal"
+            defaultSelectedKeys={['home']}
+          >
+            <Menu.Item key="home">
+              <Link to="/">Home</Link>
+            </Menu.Item>
+            <Menu.Item key="users">
+              <Link to="/users">Users</Link>
+            </Menu.Item>
+            <Menu.Item key="books">
+              <Link to="/books">Books</Link>
+            </Menu.Item>
+          </Menu>
+        </Header>
+
+        <Content
+          className="site-layout"
+          style={{ padding: "0 50px", marginTop: 64 }}
         >
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-          >
+          <Breadcrumb style={{ margin: "16px 0" }}>
             <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
+            <Breadcrumb.Item>Users</Breadcrumb.Item>
+            <Breadcrumb.Item>Books</Breadcrumb.Item>
           </Breadcrumb>
-          <Content
+          <div
             className="site-layout-background"
-            style={{
-              padding: 24,
-              margin: 0,
-              minHeight: 280,
-            }}
+            style={{ padding: 24, minHeight: 380 }}
           >
-            <DeleteUpdateSearchBook />
-          </Content>
-        </Layout>
+            <Switch>
+              <Route path="/">
+                <Home setIsAuthenticated={setIsAuthenticated} />
+              </Route>
+              <Route path="users">
+                <h1>USERS</h1>
+              </Route>
+              <Route path="books">
+                <AddBook />
+              </Route>
+            </Switch>
+          </div>
+        </Content>
       </Layout>
-    </Layout>
+    </Router >
   );
 }
+
+/*
+return (
+    <Router>
+      <Layout
+        style={{ minHeight: '100vh' }}
+      >
+        <Header className="header">
+          <div className="logo" />
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            defaultSelectedKeys={['home']}
+          >
+            <Menu.Item key="home">
+              <Link to="/">Home</Link>
+            </Menu.Item>
+            <Menu.Item key="users">
+              <Link to="/users">Users</Link>
+            </Menu.Item>
+            <Menu.Item key="books">
+              <Link to="/books">Books</Link>
+            </Menu.Item>
+          </Menu>
+        </Header>
+
+        <Layout>
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={(value) => setCollapsed(value)}
+          >
+            <div className="logo" />
+            <Menu
+              theme="dark"
+              defaultSelectedKeys={['1']}
+              mode="inline"
+              items={items2}
+            />
+          </Sider>
+
+          <Switch>
+            <Route path="/">
+              <Home setIsAuthenticated={setIsAuthenticated} />
+            </Route>
+            <Route path="users">
+              <h1>USERS</h1>
+            </Route>
+            <Route path="books">
+              <AddBook />
+            </Route>
+          </Switch>
+
+        </Layout>
+      </Layout>
+    </Router>
+  );
+*/
