@@ -6,10 +6,11 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { _login } from '../../service/AuthService';
 
-export default function Login({setIsAuthenticated}) {
+export default function Login({ setIsAuthenticated }) {
 
   async function onLoginFormFinish({ username, password, remember }) {
     const responseData = await _login({ username, password })
+    console.log(responseData);
 
     if (!responseData.successful) { // Not Successful
       return;
