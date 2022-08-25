@@ -8,7 +8,7 @@ import { UserOutlined } from '@ant-design/icons';
 
 import { _searchUserByUsername, _updateUser } from "../service/UserService";
 
-import { BOOK_COLUMNS } from "../global-vars/BookColumns";
+import BOOK_COLUMNS from "../global-vars/BookColumns";
 
 const { Content } = Layout;
 const { Panel } = Collapse;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import "antd/dist/antd.css";
 import { Form, Input, InputNumber, Button, Col, Row } from "antd";
 
@@ -11,8 +11,22 @@ import {
   _updateUser
 } from '../../service/UserService';
 
+import PAGINATION from "../../global-vars/Pagination";
+
 export default function DeleteUpdateSearchUser() {
-  const [userId, setUserId] = useState(0);
+  const [state, setState] = useState({
+    userId: 0,
+    username: '',
+    userData: [{
+      key: 0,
+      username: "",
+      readList: null,
+      favoriteList: null,
+      roles: null,
+    }],
+    pagination: PAGINATION
+  })
+  /* const [userId, setUserId] = useState(0);
   const [username, setUsername] = useState("");
   const [userData, setUserData] = useState([{
     key: 0,
@@ -22,68 +36,169 @@ export default function DeleteUpdateSearchUser() {
     roles: null,
   }]);
 
+  const [pagination, setPagination] = useState(PAGINATION) */
+
+  const isFirstRender = useRef(true);
+
   /* ========== Use Effect Function ========== */
   useEffect(() => {
     async function searchAllUsers() {
-      const data = await _searchAllUsers({
-        pageSize: 10,
-        pageNumber: 0
-      });
 
-      const newContent = UserContentParser(data);
+      const responseData = await _searchAllUsers(state.pagination); // searching users
+      //const responseData = await _searchAllUsers(pagination); // searching users
 
-      setUserData(newContent);
+      if (!responseData.successful) { // Not successful
+        window.alert("Error in searchAllBook in SearchBook!");
+        return;
+      }
+
+      // setting total elements in the beginning
+      setState({
+        ...state,
+        pagination: {
+          ...state.pagination,
+          total: responseData.totalElements
+        }
+      })
+      /* setPagination({
+        ...pagination,
+        total: responseData.totalElements
+      }); */
+
+      const newContent = UserContentParser(responseData);
+
+      //setUserData(newContent);
+      setState({
+        ...state,
+        userData: newContent
+      })
     }
 
     searchAllUsers();
-  }, [userId != null, username !== ""])
+  }, [])
+
+  useEffect(() => {
+    async function searchAllUsers() {
+
+      //const responseData = await _searchAllUsers(pagination); // searching users
+      const responseData = await _searchAllUsers(state.pagination); // searching users
+
+      if (!responseData.successful) { // Not successful
+        window.alert("Error in searchAllBook in SearchBook!");
+        return;
+      }
+
+      const newContent = UserContentParser(responseData);
+
+      //setUserData(newContent);
+      setState({
+        ...state,
+        userData: newContent
+      })
+    }
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    searchAllUsers();
+  }, [state.userId != null, state.username !== "", state.pagination])
 
 
   /* ========== Event Listener Functions ========== */
   function onUserIdChange(newId) {
-    setUserId(newId);
+    //setUserId(newId);
+    setState({
+      ...state,
+      userId: newId
+    })
   }
 
   function onUsernameChange(event) {
-    setUsername(event.target.value);
+    //setUsername(event.target.value);
+    setState({
+      ...state,
+      username: event.target.value
+    })
   }
 
   async function onUserSearchById() {
-    if (userId < 0) {
+    if (state.userId < 0) {
       window.alert("Check User Id. User Id should be greater than or equal 0!")
       return;
     }
 
-    const data = await _searchUserById({ userId });
+    const data = await _searchUserById({ userId: state.userId });
 
     if (!data.successful) { // Not Found
-      setUserData([]);
+      //setUserData([]);
+      setState({
+        ...state,
+        userData: []
+      })
       return;
     }
 
     // User is found
     const newContent = UserContentParser(data);
 
-    setUserData(newContent);
+    //setUserData(newContent);
+    setState({
+      ...state,
+      userData: newContent
+    })
+
+    /* onPaginationChange({
+      newPageNumber: data.pageable.pageNumber + 1, // response's pageNumber start from 0
+      newPageSize: data.pageable.pageSize
+    });  */
+
   }
 
   async function onUserSearchByName() {
-    if (username === "" || username == null) {
+    if (state.username === "" || state.username == null) {
       window.alert("Check Username. Username should be provided!")
       return;
     }
 
-    const data = await _searchUserByName({ username });
+    const data = await _searchUserByName({ username: state.username });
 
     if (!data.successful) { // Not Found
-      setUserData([]);
+      //setUserData([]);
+      setState({
+        ...state,
+        userData: []
+      })
       return;
     }
 
     // User(s) is found
     const newContent = UserContentParser(data);
 
-    setUserData(newContent);
+    //setUserData(newContent);
+    setState({
+      ...state,
+      userData: newContent
+    })
+  }
+
+  function onPaginationChange({ newPageNumber, newPageSize }) {
+    /* setPagination({
+      ...pagination,
+      current: newPageNumber,
+      pageSize: newPageSize,
+      pageNumber: newPageNumber - 1
+    }); */
+    setState({
+      ...state,
+      pagination: {
+        ...state.pagination,
+        current: newPageNumber,
+        pageSize: newPageSize,
+        pageNumber: newPageNumber - 1
+      }
+    })
   }
 
   /* ========== Handle Functions ========== */
@@ -96,11 +211,16 @@ export default function DeleteUpdateSearchUser() {
     }
 
     // Delete is successful
-    const newUserData = userData.filter((item) => item.key !== key);
+    const newUserData = state.userData.filter((item) => item.key !== key);
 
-    setUserData(newUserData);
+    //setUserData(newUserData);
+    setState({
+      ...state,
+      userData: newUserData
+    })
   }
 
+  // @TODO Change it
   async function handleUpdate(key, password) {
     const data = await _updateUser({ userId: key, password: password })
 
@@ -110,7 +230,11 @@ export default function DeleteUpdateSearchUser() {
     }
 
     // Update is successful
-    setUserData(userData);
+    //setUserData(userData);
+    setState({
+      ...state,
+      userData: state.userData
+    })
   }
 
   /* ========== Return ========== */
@@ -131,7 +255,7 @@ export default function DeleteUpdateSearchUser() {
                   min={0}
                   id="userId"
                   name="userId"
-                  value={userId}
+                  value={state.userId}
                   onChange={onUserIdChange}
                 />
 
@@ -153,7 +277,7 @@ export default function DeleteUpdateSearchUser() {
                 <Input
                   id="username"
                   name="username"
-                  value={username}
+                  value={state.username}
                   onChange={onUsernameChange}
                 />
 
@@ -169,9 +293,11 @@ export default function DeleteUpdateSearchUser() {
       <div className='user-show'>
         <h1>Users</h1>
         <UserShow
-          users={userData}
+          users={state.userData}
           handleDelete={handleDelete}
           handleUpdate={handleUpdate}
+          pagination={state.pagination}
+          onPaginationChange={onPaginationChange}
         />
       </div>
     </>

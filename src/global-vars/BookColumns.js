@@ -1,4 +1,4 @@
-export const BOOK_COLUMNS = [
+const BOOK_COLUMNS = [
   {
     title: 'Book Name',
     dataIndex: 'name',
@@ -30,3 +30,5 @@ export const BOOK_COLUMNS = [
     key: 'publicationDate'
   }
 ];
+
+export default BOOK_COLUMNS;
