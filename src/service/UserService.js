@@ -87,6 +87,33 @@ export function _searchAllUsers(pagination) {
     });
 }
 
+export function _searchAllUsersList() {
+
+  var axios = require('axios');
+  var data = JSON.stringify({
+  });
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/users/no-pagination`,
+    headers: {},
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return { 
+        successful: true, 
+        data: response.data
+      };
+    })
+    .catch(function () {
+      return { 
+        successful: false 
+      };
+    });
+}
+
 export function _searchUserById({ userId }) {
 
   var axios = require('axios');
@@ -108,6 +135,33 @@ export function _searchUserById({ userId }) {
       return { 
         successful: true, 
         ...response.data 
+      };
+    })
+    .catch(function () {
+      return { 
+        successful: false 
+      };
+    });
+}
+
+export function _searchUserByIdList({ userId }) {
+
+  var axios = require('axios');
+  var data = JSON.stringify({
+  });
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/users/no-pagination/${userId}`,
+    headers: {},
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return { 
+        successful: true, 
+        data: [response.data] 
       };
     })
     .catch(function () {
@@ -140,6 +194,33 @@ export function _searchUserByName({ username, pagination }) {
       return { 
         successful: true, 
         ...response.data 
+      };
+    })
+    .catch(function () {
+      return { 
+        successful: false 
+      };
+    });
+}
+
+export function _searchUserByUsernameList({ username }) {
+
+  var axios = require('axios');
+  var data = JSON.stringify({
+  });
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/users/no-pagination/name/${username}`,
+    headers: {},
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return { 
+        successful: true, 
+        data: response.data
       };
     })
     .catch(function () {
