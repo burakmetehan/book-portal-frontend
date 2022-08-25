@@ -29,16 +29,9 @@ export default function User({ setHeaderKey }) {
   return (
     <Layout
       style={{
-        padding: '0 24px 24px',
+        padding: '24px 24px 24px',
       }}
     >
-      <Breadcrumb
-        style={{
-          margin: '16px 0',
-        }}
-      >
-        <Breadcrumb.Item>User</Breadcrumb.Item>
-      </Breadcrumb>
       <Radio.Group
         options={options}
         onChange={onChange}
@@ -63,5 +56,4 @@ function RenderSwitch({ option }) {
     default:
       return <h1>Error</h1>;
   }
-
 }
