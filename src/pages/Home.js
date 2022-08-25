@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 
-import { Button, Breadcrumb, Layout, Card, Descriptions, Collapse, Table, Form, Input, Popconfirm } from 'antd';
-
+import {
+  Alert, Avatar, Button, Breadcrumb, Card, Collapse,
+  Descriptions, Form, Input, Layout, message, notification, Table
+} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { Avatar } from 'antd';
 
-import { _searchUserByName2, _updateUser } from "../service/UserService";
-import DescriptionsItem from "antd/lib/descriptions/Item";
-import FormItem from "antd/es/form/FormItem";
+import { _searchUserByUsername, _updateUser } from "../service/UserService";
+
+import { BOOK_COLUMNS } from "../global-vars/BookColumns";
 
 const { Content } = Layout;
 const { Panel } = Collapse;
 
 export default function Home({ setIsAuthenticated, setHeaderKey }) {
   setHeaderKey('home');
-
 
   return (
     <Layout
@@ -38,14 +38,19 @@ function HomeContent({ setIsAuthenticated }) {
   const [userData, setUserData] = useState({});
   const [isChangePassword, setIsChangePassword] = useState(false);
 
+  /* ========== Use Effect ========== */
   useEffect(() => {
     async function getUserData() {
-      const userData = await _searchUserByName2({ username: localStorage.getItem('Username') });
+      const userData = await _searchUserByUsername({
+        username: sessionStorage.getItem('Username')
+      });
 
-      if (!userData.successful) {
+      if (!userData.successful) { // Not successful
         localStorage.clear();
         sessionStorage.clear();
+
         setIsAuthenticated(false);
+
         return;
       }
 
@@ -55,44 +60,50 @@ function HomeContent({ setIsAuthenticated }) {
     getUserData();
   }, [])
 
-  async function passwordChange({ newPassword }) {
-    const responseData = await _updateUser({ userId: userData.id, newPassword });
+  /* ========== Password Change ========== */
+  async function passwordChange({ password }) {
+    const responseData = await _updateUser({ userId: userData.id, newPassword: password });
 
     if (!responseData.successful) { // Not successful
+      const config = {
+        description: 'Password Change Error!',
+        duration: 4.5,
+        key: 'password-change-warning',
+        message: 'An error happened in password change! Please log in and try again!',
+        placement: 'top'
+      }
 
+      notification.error(config);
+    } else {
+      const config = {
+        description: 'Your password is changed successfully!',
+        duration: 4.5,
+        key: 'password-change-warning',
+        message: 'Password is changed!',
+        placement: 'top'
+      }
+
+      notification.success(config);
     }
 
     setUserData(userData);
 
     localStorage.clear();
     sessionStorage.clear();
+
     setIsAuthenticated(false);
   }
 
   function onUserUpdateFormFinish({ password }) {
-    console.log("Hi")
-    console.log(password);
-
+    passwordChange({ password });
     setIsChangePassword(false);
-    window.alert("Password is changed!");
-    passwordChange(password);
   };
 
-  function HomeAvatar() {
-    return (
-      <div className="home-avatar">
-        <Avatar
-          style={{
-            backgroundColor: '#87d068',
-          }}
-          size="large"
-          icon={<UserOutlined />}
-        />
-        Hello <b>{localStorage.getItem('Username')}</b>
-      </div>
-    );
+  function onClickPasswordChangeButton() {
+    setIsChangePassword(!isChangePassword);
   }
 
+  /* ========== Info Part ========== */
   function HomeInfo() {
     return (
       <Card
@@ -102,21 +113,21 @@ function HomeContent({ setIsAuthenticated }) {
         <Descriptions
           bordered
         >
-          <DescriptionsItem label="User Id">{userData.id || null}</DescriptionsItem>
+          <Descriptions.Item label="User Id">{userData.id || null}</Descriptions.Item>
         </Descriptions>
 
         <Collapse ghost>
           <Panel header="Read List" key="readList">
             <Table
               bordered
-              columns={bookColumns}
+              columns={BOOK_COLUMNS}
               dataSource={userData.readList}
             />
           </Panel>
           <Panel header="Favorite List" key="favoriteList">
             <Table
               bordered
-              columns={bookColumns}
+              columns={BOOK_COLUMNS}
               dataSource={userData.favoriteList}
             />
           </Panel>
@@ -137,13 +148,13 @@ function HomeContent({ setIsAuthenticated }) {
         <Button
           type="primary"
           htmlType="submit"
-          onClick={() => setIsChangePassword(!isChangePassword)}
+          onClick={onClickPasswordChangeButton}
         >
           {isChangePassword ? 'Cancel' : 'Change Password'}
         </Button>
 
         {
-          isChangePassword && <UserUpdateForm onFinish={onUserUpdateFormFinish} />
+          isChangePassword && <UserUpdateForm onUserUpdateFormFinish={onUserUpdateFormFinish} />
         }
       </Card>
 
@@ -160,25 +171,29 @@ function HomeContent({ setIsAuthenticated }) {
         minHeight: 280,
       }}
     >
-
       <HomeInfo />
-
     </Content>
   );
 }
 
-function UserUpdateForm({ onFinish }) {
+function UserUpdateForm({ onUserUpdateFormFinish }) {
   const [form] = Form.useForm();
 
   return (
     <Form
       form={form}
       name="updateUser"
-      onFinish={onFinish}
+      onFinish={onUserUpdateFormFinish}
       onFinishFailed={() => console.log("Fail")}
     >
       <Form.Item>
-        <b>Warning:</b> When password is changed, you will be logged out!
+        <Alert
+          message="Warning"
+          description="When password is changed, you will be logged out!"
+          type="warning"
+          showIcon
+          closable
+        />
       </Form.Item>
       <Form.Item
         name="password"
@@ -226,29 +241,17 @@ function UserUpdateForm({ onFinish }) {
   );
 }
 
-const bookColumns = [
-  {
-    title: 'Book Name',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Author',
-    dataIndex: 'author',
-  },
-  {
-    title: 'Page Count',
-    dataIndex: 'pageCount',
-  },
-  {
-    title: 'Type',
-    dataIndex: 'type',
-  },
-  {
-    title: 'Publisher',
-    dataIndex: 'publisher',
-  },
-  {
-    title: 'Publication Date',
-    dataIndex: 'publicationDate',
-  }
-];
+function HomeAvatar() {
+  return (
+    <div className="home-avatar">
+      <Avatar
+        style={{
+          backgroundColor: '#87d068',
+        }}
+        size="large"
+        icon={<UserOutlined />}
+      />
+      Hello <b>{sessionStorage.getItem('Username')}</b>
+    </div>
+  );
+}

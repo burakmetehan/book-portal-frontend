@@ -10,19 +10,24 @@ export default function Login({ setIsAuthenticated }) {
 
   async function onLoginFormFinish({ username, password, remember }) {
     const responseData = await _login({ username, password })
-    console.log(responseData);
 
     if (!responseData.successful) { // Not Successful
+      setIsAuthenticated(false);
       return;
     }
 
+    const { user } = responseData;
+    const { token } = responseData;
+
+    console.log(remember);
+
     if (remember) {
-      localStorage.setItem('Authorization', 'Bearer ' + responseData.token);
-      localStorage.setItem('Username', responseData.user.username);
+      localStorage.setItem('Authorization', token);
+      localStorage.setItem('Username', user.username);
     }
 
-    sessionStorage.setItem('Authorization', 'Bearer ' + responseData.token);
-    sessionStorage.setItem('Username', responseData.user.username);
+    sessionStorage.setItem('Authorization', token);
+    sessionStorage.setItem('Username', user.username);
 
     setIsAuthenticated(true);
   };

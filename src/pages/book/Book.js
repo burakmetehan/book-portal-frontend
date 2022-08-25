@@ -4,7 +4,7 @@ import { Layout, Radio, Breadcrumb } from "antd";
 
 import AddBook from "./AddBook";
 import DeleteUpdateSearchBook from "./DeleteUpdateSearchBook";
-import SearchBook from "./SearchBook";
+import BookList from "./BookList";
 
 const { Content } = Layout;
 
@@ -18,10 +18,12 @@ const options = [
     value: 'Update/Delete Book'
   },
   {
-    label: 'Search Book',
-    value: 'Search Book'
+    label: 'Book List',
+    value: 'Book List'
   }
 ];
+
+const breadcrumbItems = ['Book'];
 
 export default function Book({ setHeaderKey }) {
   setHeaderKey('book');
@@ -42,7 +44,11 @@ export default function Book({ setHeaderKey }) {
           margin: '16px 0',
         }}
       >
-        <Breadcrumb.Item>Book</Breadcrumb.Item>
+        {
+          breadcrumbItems.map((item) => {
+            return <Breadcrumb.Item>{item}</Breadcrumb.Item>
+          })
+        }
       </Breadcrumb>
       <Radio.Group
         options={options}
@@ -65,8 +71,8 @@ function RenderSwitch({ option }) {
       return <AddBook />;
     case 'Update/Delete Book':
       return <DeleteUpdateSearchBook />;
-    case 'Search Book':
-      return <SearchBook />
+    case 'Book List':
+      return <BookList />
     default:
       return <h1>Error</h1>;
   }

@@ -131,10 +131,7 @@ export function _searchUserByName({ username }) {
   var config = {
     method: 'get',
     url: `http://localhost:8080/users/name/${username}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
@@ -152,7 +149,7 @@ export function _searchUserByName({ username }) {
     });
 }
 
-export function _searchUserByName2({ username }) {
+export function _searchUserByUsername({ username }) {
 
   var axios = require('axios');
   var data = JSON.stringify({
@@ -161,10 +158,7 @@ export function _searchUserByName2({ username }) {
   var config = {
     method: 'get',
     url: `http://localhost:8080/users/name?username=${username}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
@@ -192,10 +186,7 @@ export function _updateUser({ userId, newPassword }) {
   var config = {
     method: 'put',
     url: `http://localhost:8080/users/${userId}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 

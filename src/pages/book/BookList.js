@@ -10,11 +10,11 @@ import {
   _removeReadList
 } from "../../service/BookListService";
 import { _searchAllBook } from "../../service/BookService";
-import { _searchUserByName2 } from "../../service/UserService";
+import { _searchUserByUsername } from "../../service/UserService";
 
 import { BookContentParserWithUserListInfo } from "./BookContentParser";
 
-export default function SearchBook() {
+export default function BookList() {
   const bookColumns = [
     {
       title: 'Book Name',
@@ -108,7 +108,7 @@ export default function SearchBook() {
       setLoading(true);
 
       const username = sessionStorage.getItem('Username'); // Getting username from sessionStorage
-      const responseData = await _searchUserByName2({ username }); // Database call for search by username
+      const responseData = await _searchUserByUsername({ username }); // Database call for search by username
 
       if (!responseData.successful) { // Not successful
         window.alert("Error in searchUser in SearchBook!");
