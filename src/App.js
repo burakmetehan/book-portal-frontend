@@ -70,6 +70,7 @@ export default function App() {
   }, [])
 
   return (
+    <>{ isAuthenticated ? 
     <Router>
       <Layout
         style={{ height: '100vh' }}
@@ -128,7 +129,7 @@ export default function App() {
 
       </Layout>
     </Router >
-  )
+  : <Login setIsAuthenticated={setIsAuthenticated} />}</>)
 
   /*  return (
      <Layout

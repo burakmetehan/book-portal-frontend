@@ -5,12 +5,26 @@
  * @param {Object} responseData data object of the response (response.data)
  * @returns content of the paged response data
  */
-export default function UserContentParser(responseData) {
-  const newContent = responseData.content.map((book) => {
+export default function BookContentParser(responseData) {
+  const newContent = responseData.content.map((book, index) => {
     return ({
       ...book,
-      key: book.id,
+      key: index,
       publicationDate: book.publicationDate.slice(0, 10)
+    });
+  });
+
+  return newContent;
+}
+
+export function BookContentParserWithUserListInfo(responseData, favoriteBooks, readBooks) {
+  const newContent = responseData.content.map((book, index) => {
+    return ({
+      ...book,
+      key: index,
+      publicationDate: book.publicationDate.slice(0, 10),
+      isFavorite: favoriteBooks.includes(book.id),
+      isRead: readBooks.includes(book.id)
     });
   });
 
