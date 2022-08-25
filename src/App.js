@@ -95,7 +95,7 @@ export default function App() {
         </Header>
 
         <Layout>
-          <Sider
+          {/* <Sider
             collapsible
             collapsed={collapsed}
             onCollapse={(value) => setCollapsed(value)}
@@ -107,7 +107,7 @@ export default function App() {
               mode="inline"
               items={items2}
             />
-          </Sider>
+          </Sider> */}
 
           <Content
             className="site-layout"

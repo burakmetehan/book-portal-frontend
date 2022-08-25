@@ -1,11 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "antd/dist/antd.css";
+import { Button, Space, Table } from 'antd';
 
-import { Space, Table, Button } from 'antd';
-import { _addFavoriteList, _addReadList, _removeFavoriteList, _removeReadList } from "../../service/BookListService";
 
-import { _searchUserByName2 } from "../../service/UserService";
+import {
+  _addFavoriteList,
+  _addReadList,
+  _removeFavoriteList,
+  _removeReadList
+} from "../../service/BookListService";
 import { _searchAllBook } from "../../service/BookService";
+import { _searchUserByName2 } from "../../service/UserService";
 
 import { BookContentParserWithUserListInfo } from "./BookContentParser";
 
@@ -65,9 +70,12 @@ export default function SearchBook() {
       )
     }
   ];
+
+  /* ========== States ========== */
   const [userId, setUserId] = useState(0);
-  const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [readBooks, setReadBooks] = useState([]);
+  const [favoriteBooks, setFavoriteBooks] = useState([]);
+
   const [bookData, setBookData] = useState([{
     key: 0,
     name: "",
@@ -79,6 +87,8 @@ export default function SearchBook() {
     isFavorite: false,
     isRead: false
   }]);
+
+  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     showSizeChanger: true,
     current: 1, // Current page number
@@ -86,8 +96,8 @@ export default function SearchBook() {
     pageSize: 5, // Page size for both table and backend call
     total: 0 // Total number of data items
   })
-  const [loading, setLoading] = useState(false);
 
+  /* ========== Refs ========== */
   const isFirstRender = useRef(true); // Variable to block run in first render
   const isFirstRenderPagination = useRef(true);
 
@@ -235,11 +245,10 @@ export default function SearchBook() {
 
   return (
     <>
-      <Button type="primary" onClick={() => console.log(bookData)}>bookData</Button>
       <Table
         loading={loading}
         columns={bookColumns}
-        dataSource={[...bookData]}
+        dataSource={bookData}
         pagination={pagination}
         onChange={handleTableChange}
       />
