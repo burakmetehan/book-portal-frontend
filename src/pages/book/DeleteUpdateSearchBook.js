@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import "antd/dist/antd.css";
 import { Form, Input, InputNumber, Button, Col, Row } from "antd";
-import { _deleteBook, _searchAllBook, _searchBookById, _searchBookByName, _updateBook } from '../../service/BookService';
+import { _deleteBook, _searchAllBook, _searchAllBookList, _searchBookById, _searchBookByIdList, _searchBookByName, _searchBookByNameList, _updateBook } from '../../service/BookService';
 
-import BookContentParser from "./BookContentParser";
+import BookContentParser, { BookListParser } from "./BookContentParser";
 import BookShow from "./BookShow";
 
 export default function DeleteUpdateSearchBook() {
@@ -22,12 +22,14 @@ export default function DeleteUpdateSearchBook() {
   /* ========== Use Effect Function ========== */
   useEffect(() => {
     async function searchAll() {
-      const data = await _searchAllBook({
-        pageSize: 10,
-        pageNumber: 0
-      });
+      const response = await _searchAllBookList();
 
-      const newContent = BookContentParser(data);
+      if (!response.successful) { // Not Found
+        setBookData([]);
+        return;
+      }
+
+      const newContent = BookListParser(response.data);
 
       setBookData(newContent);
     };
@@ -50,15 +52,15 @@ export default function DeleteUpdateSearchBook() {
       return;
     }
 
-    const data = await _searchBookById({ bookId });
+    const response = await _searchBookByIdList({ bookId });
 
-    if (!data.successful) { // Not Found
+    if (!response.successful) { // Not Found
       setBookData([]);
       return;
     }
 
     // Book is found
-    const newContent = BookContentParser(data);
+    const newContent = BookListParser(response.data);
 
     setBookData(newContent);
   }
@@ -69,15 +71,15 @@ export default function DeleteUpdateSearchBook() {
       return;
     }
 
-    const data = await _searchBookByName({ bookName });
+    const response = await _searchBookByNameList({ bookName });
 
-    if (!data.successful) { // Not Found
+    if (!response.successful) { // Not Found
       setBookData([]);
       return;
     }
 
     // Book(s) is found
-    const newContent = BookContentParser(data);
+    const newContent = BookListParser(response.data);
 
     setBookData(newContent);
   }

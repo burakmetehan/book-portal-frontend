@@ -101,6 +101,32 @@ export function _searchAllBook(pagination) {
     });
 }
 
+export function _searchAllBookList() {
+
+  var axios = require('axios');
+  var data = JSON.stringify({});
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/books/no-pagination`,
+    headers: {},
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return {
+        successful: true,
+        data: response.data
+      };
+    })
+    .catch(function () {
+      return {
+        successful: false
+      };
+    });
+}
+
 export function _searchBookById({ bookId }) {
 
   var axios = require('axios');
@@ -125,6 +151,32 @@ export function _searchBookById({ bookId }) {
     })
     .catch(function () {
       console.error("Error in adding book!")
+      return {
+        successful: false
+      };
+    });
+}
+
+export function _searchBookByIdList({ bookId }) {
+
+  var axios = require('axios');
+  var data = JSON.stringify({});
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/books/no-pagination/${bookId}`,
+    headers: {},
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return {
+        successful: true,
+        data: [response.data]
+      };
+    })
+    .catch(function () {
       return {
         successful: false
       };
@@ -160,6 +212,32 @@ export function _searchBookByName({ bookName }) {
     })
     .catch(function () {
       console.error("Error in adding book!")
+      return {
+        successful: false
+      };
+    });
+}
+
+export function _searchBookByNameList({ bookName }) {
+
+  var axios = require('axios');
+  var data = JSON.stringify({});
+
+  var config = {
+    method: 'get',
+    url: `http://localhost:8080/books/no-pagination/name/${bookName}`,
+    headers: {},
+    data: data
+  };
+
+  return axios(config)
+    .then(function (response) {
+      return {
+        successful: true,
+        data: response.data
+      };
+    })
+    .catch(function () {
       return {
         successful: false
       };

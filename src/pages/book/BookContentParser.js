@@ -30,3 +30,16 @@ export function BookContentParserWithUserListInfo(responseData, favoriteBooks, r
 
   return newContent;
 }
+
+export function BookListParser(responseData) {
+  console.log(responseData)
+  const newContent = responseData.map((book) => {
+    return ({
+      ...book,
+      key: book.id,
+      publicationDate: book.publicationDate.slice(0, 10)
+    });
+  });
+
+  return newContent;
+}
