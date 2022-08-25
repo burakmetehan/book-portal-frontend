@@ -68,7 +68,7 @@ function HomeContent({ setIsAuthenticated }) {
       const config = {
         description: 'Password Change Error!',
         duration: 4.5,
-        key: 'password-change-warning',
+        key: 'password-change-error',
         message: 'An error happened in password change! Please log in and try again!',
         placement: 'top'
       }
@@ -78,7 +78,7 @@ function HomeContent({ setIsAuthenticated }) {
       const config = {
         description: 'Your password is changed successfully!',
         duration: 4.5,
-        key: 'password-change-warning',
+        key: 'password-change-success',
         message: 'Password is changed!',
         placement: 'top'
       }

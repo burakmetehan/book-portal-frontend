@@ -122,7 +122,7 @@ export function _searchUserById({ userId }) {
  * @param {String} username Name of the users(s) to be searched
  * @returns Paged user(s)
  */
-export function _searchUserByName({ username }) {
+export function _searchUserByName({ username, pagination }) {
 
   var axios = require('axios');
   var data = JSON.stringify({
@@ -130,7 +130,7 @@ export function _searchUserByName({ username }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/name/${username}`,
+    url: `http://localhost:8080/users/name/${username}?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`,
     headers: {},
     data: data
   };

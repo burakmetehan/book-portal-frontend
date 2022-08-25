@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import "antd/dist/antd.css";
-import { Form, Input, InputNumber, Button, Col, Row } from "antd";
+import { Form, Input, InputNumber, Button, Col, Row, notification, Radio } from "antd";
 
 import UserShow from './UserShow';
 import UserContentParser from './UserContentParser';
+
+import SearchUser from "./SearchUser";
 
 import {
   _deleteUser,
@@ -11,7 +13,21 @@ import {
   _updateUser
 } from '../../service/UserService';
 
+
+
 import PAGINATION from "../../global-vars/Pagination";
+
+
+const options = [
+  {
+    label: 'Search User By ID',
+    value: 'Search User By ID'
+  },
+  {
+    label: 'Search User By Username',
+    value: 'Search User By Username'
+  }
+];
 
 export default function DeleteUpdateSearchUser() {
   const [state, setState] = useState({
@@ -24,54 +40,44 @@ export default function DeleteUpdateSearchUser() {
       favoriteList: null,
       roles: null,
     }],
-    pagination: PAGINATION
+    pagination: PAGINATION,
+    radioValue: 'Search User By ID'
   })
-  /* const [userId, setUserId] = useState(0);
-  const [username, setUsername] = useState("");
-  const [userData, setUserData] = useState([{
-    key: 0,
-    username: "",
-    readList: null,
-    favoriteList: null,
-    roles: null,
-  }]);
-
-  const [pagination, setPagination] = useState(PAGINATION) */
 
   const isFirstRender = useRef(true);
+  const isFirstRender2 = useRef(true);
 
-  /* ========== Use Effect Function ========== */
+  /* ========== Use Effect Functions ========== */
   useEffect(() => {
     async function searchAllUsers() {
 
       const responseData = await _searchAllUsers(state.pagination); // searching users
-      //const responseData = await _searchAllUsers(pagination); // searching users
 
       if (!responseData.successful) { // Not successful
-        window.alert("Error in searchAllBook in SearchBook!");
+        const config = {
+          description: 'User could not be loaded!',
+          duration: 4.5,
+          key: 'search-all-user-error',
+          message: 'An error happened while trying to load users! Please try later!',
+          placement: 'top'
+        }
+
+        notification.error(config);
+
         return;
       }
 
-      // setting total elements in the beginning
+      const newContent = UserContentParser(responseData);
+
+      // setting state with new pagination and new userData
       setState({
         ...state,
         pagination: {
           ...state.pagination,
           total: responseData.totalElements
-        }
-      })
-      /* setPagination({
-        ...pagination,
-        total: responseData.totalElements
-      }); */
-
-      const newContent = UserContentParser(responseData);
-
-      //setUserData(newContent);
-      setState({
-        ...state,
+        },
         userData: newContent
-      })
+      });
     }
 
     searchAllUsers();
@@ -80,21 +86,28 @@ export default function DeleteUpdateSearchUser() {
   useEffect(() => {
     async function searchAllUsers() {
 
-      //const responseData = await _searchAllUsers(pagination); // searching users
       const responseData = await _searchAllUsers(state.pagination); // searching users
 
       if (!responseData.successful) { // Not successful
-        window.alert("Error in searchAllBook in SearchBook!");
+        const config = {
+          description: 'User could not be loaded!',
+          duration: 4.5,
+          key: 'search-all-user-error',
+          message: 'An error happened while trying to load users! Please try later!',
+          placement: 'top'
+        }
+
+        notification.error(config);
+
         return;
       }
 
       const newContent = UserContentParser(responseData);
 
-      //setUserData(newContent);
       setState({
         ...state,
         userData: newContent
-      })
+      });
     }
 
     if (isFirstRender.current) {
@@ -103,93 +116,232 @@ export default function DeleteUpdateSearchUser() {
     }
 
     searchAllUsers();
-  }, [state.userId != null, state.username !== "", state.pagination])
+  }, [state.userId != null, state.username !== ""])
+
+  useEffect(() => {
+    async function userSearchById() {
+      if (state.userId < 0) {
+        const config = {
+          description: 'Check User ID!',
+          duration: 4.5,
+          key: 'search-user-by-id-error',
+          message: 'User ID should be 0 or greater than 0!',
+          placement: 'top'
+        }
+
+        notification.error(config);
+
+        return;
+      }
+
+      const responseData = await _searchUserById({ userId: state.userId });
+      if (!responseData.successful) { // Not Found
+        setState({
+          ...state,
+          userData: []
+        });
+
+        const config = {
+          description: 'User is not found!',
+          duration: 4.5,
+          key: 'search-user-by-id-not-found-error',
+          message: 'User could not be found! Check username and try again!',
+          placement: 'top'
+        }
+
+        notification.error(config);
+
+        return;
+      }
+
+      // User is found
+      const newContent = UserContentParser(responseData);
+
+      setState({
+        ...state,
+        userData: newContent
+      });
+    }
+
+    async function userSearchByName() {
+      if (state.username === "" || state.username == null) {
+        const config = {
+          description: 'Check Username!',
+          duration: 4.5,
+          key: 'search-user-by-username-error',
+          message: 'Username should be provided!',
+          placement: 'top'
+        }
+
+        notification.error(config);
+
+        return;
+      }
+
+      const responseData = await _searchUserByName({ username: state.username, pagination: state.pagination });
+      if (!responseData.successful) { // Not Found
+        setState({
+          ...state,
+          userData: []
+        })
+
+        const config = {
+          description: 'User is not found!',
+          duration: 4.5,
+          key: 'search-user-by-username-not-found-error',
+          message: 'User could not be found! Check username and try again!',
+          placement: 'top'
+        }
+
+        notification.error(config);
+
+        return;
+      }
+
+      // User(s) is found
+      const newContent = UserContentParser(responseData);
+
+      setState({
+        ...state,
+        userData: newContent
+      });
+    }
+
+    if (state.radioValue === "Search User By ID") {
+      userSearchById();
+    } else {
+      userSearchByName();
+    }
+  }, [state.pagination])
 
 
   /* ========== Event Listener Functions ========== */
   function onUserIdChange(newId) {
-    //setUserId(newId);
     setState({
       ...state,
       userId: newId
-    })
+    });
   }
 
   function onUsernameChange(event) {
-    //setUsername(event.target.value);
     setState({
       ...state,
       username: event.target.value
-    })
+    });
   }
+
+  function onChangeRadioValue(event) {
+    setState({
+      ...state,
+      radioValue: event.target.value
+    });
+  };
 
   async function onUserSearchById() {
     if (state.userId < 0) {
-      window.alert("Check User Id. User Id should be greater than or equal 0!")
+      const config = {
+        description: 'Check User ID!',
+        duration: 4.5,
+        key: 'search-user-by-id-error',
+        message: 'User ID should be 0 or greater than 0!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
-    const data = await _searchUserById({ userId: state.userId });
-
-    if (!data.successful) { // Not Found
-      //setUserData([]);
+    const responseData = await _searchUserById({ userId: state.userId });
+    if (!responseData.successful) { // Not Found
       setState({
         ...state,
         userData: []
-      })
+      });
+
+      const config = {
+        description: 'User is not found!',
+        duration: 4.5,
+        key: 'search-user-by-id-not-found-error',
+        message: 'User could not be found! Check username and try again!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
     // User is found
-    const newContent = UserContentParser(data);
+    const newContent = UserContentParser(responseData);
+    const { pageNumber, pageSize, total } = responseData.pageable;
 
-    //setUserData(newContent);
     setState({
       ...state,
+      pagination: {
+        ...state.pagination,
+        current: responseData.pageable.pageNumber + 1,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
+        total: total
+      },
       userData: newContent
-    })
-
-    /* onPaginationChange({
-      newPageNumber: data.pageable.pageNumber + 1, // response's pageNumber start from 0
-      newPageSize: data.pageable.pageSize
-    });  */
-
+    });
   }
 
   async function onUserSearchByName() {
     if (state.username === "" || state.username == null) {
-      window.alert("Check Username. Username should be provided!")
+      const config = {
+        description: 'Check Username!',
+        duration: 4.5,
+        key: 'search-user-by-username-error',
+        message: 'Username should be provided!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
-    const data = await _searchUserByName({ username: state.username });
-
-    if (!data.successful) { // Not Found
-      //setUserData([]);
+    const responseData = await _searchUserByName({ username: state.username, pagination: state.pagination });
+    if (!responseData.successful) { // Not Found
       setState({
         ...state,
         userData: []
       })
+
+      const config = {
+        description: 'User is not found!',
+        duration: 4.5,
+        key: 'search-user-by-username-not-found-error',
+        message: 'User could not be found! Check username and try again!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
     // User(s) is found
-    const newContent = UserContentParser(data);
+    const newContent = UserContentParser(responseData);
+    const { pageNumber, pageSize, total } = responseData.pageable;
 
-    //setUserData(newContent);
     setState({
       ...state,
+      pagination: {
+        ...state.pagination,
+        current: responseData.pageable.pageNumber + 1,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
+        total: total
+      },
       userData: newContent
-    })
+    });
   }
 
   function onPaginationChange({ newPageNumber, newPageSize }) {
-    /* setPagination({
-      ...pagination,
-      current: newPageNumber,
-      pageSize: newPageSize,
-      pageNumber: newPageNumber - 1
-    }); */
     setState({
       ...state,
       pagination: {
@@ -197,8 +349,8 @@ export default function DeleteUpdateSearchUser() {
         current: newPageNumber,
         pageSize: newPageSize,
         pageNumber: newPageNumber - 1
-      }
-    })
+      },
+    });
   }
 
   /* ========== Handle Functions ========== */
@@ -237,56 +389,71 @@ export default function DeleteUpdateSearchUser() {
     })
   }
 
+
+
   /* ========== Return ========== */
   return (
     <>
+      <Radio.Group
+        options={options}
+        onChange={onChangeRadioValue}
+        value={state.radioValue}
+        optionType="default"
+      />
+
       <div className='search-forms'>
         <Row>
-          <Col span={12}>
-            <Form
-              onFinish={onUserSearchById}
-              onFinishFailed={() => console.log("Failed in Search User By Id!")}
-            >
-              <Form.Item
-                label="Search User By Id"
-                rules={[{ message: 'Please input an integer greater than or equal to 0!' }]}
-              >
-                <InputNumber
-                  min={0}
-                  id="userId"
-                  name="userId"
-                  value={state.userId}
-                  onChange={onUserIdChange}
-                />
+          {
+            state.radioValue === "Search User By ID" ?
+              <Col span={12}>
+                <Form
+                  onFinish={onUserSearchById}
+                  onFinishFailed={() => console.log("Failed in Search User By Id!")}
+                >
+                  <Form.Item
+                    label="Search User By Id"
+                    rules={[{ message: 'Please input an integer greater than or equal to 0!' }]}
+                  >
+                    <InputNumber
+                      min={0}
+                      id="userId"
+                      name="userId"
+                      value={state.userId}
+                      onChange={onUserIdChange}
+                    />
 
-                <Button type="primary" htmlType="submit">
-                  Search
-                </Button>
-              </Form.Item>
-            </Form>
-          </Col>
-          <Col span={12}>
-            <Form
-              onFinish={onUserSearchByName}
-              onFinishFailed={() => console.log("Failed in Search User By Name!")}
-            >
-              <Form.Item
-                label="Search User By Name"
-                rules={[{ message: 'Please input username' }]}
-              >
-                <Input
-                  id="username"
-                  name="username"
-                  value={state.username}
-                  onChange={onUsernameChange}
-                />
+                    <Button type="primary" htmlType="submit">
+                      Search
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Col>
+              :
+              <Col span={12}>
+                <Form
+                  onFinish={onUserSearchByName}
+                  onFinishFailed={() => console.log("Failed in Search User By Name!")}
+                >
+                  <Form.Item
+                    label="Search User By Name"
+                    rules={[{ message: 'Please input username' }]}
+                  >
+                    <Input
+                      id="username"
+                      name="username"
+                      value={state.username}
+                      onChange={onUsernameChange}
+                    />
 
-                <Button type="primary" htmlType="submit">
-                  Search
-                </Button>
-              </Form.Item>
-            </Form>
-          </Col>
+                    <Button type="primary" htmlType="submit">
+                      Search
+                    </Button>
+                  </Form.Item>
+                </Form>
+              </Col>
+          }
+
+
         </Row>
       </div>
 
