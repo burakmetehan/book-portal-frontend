@@ -20,10 +20,7 @@ export function _addBook({
   var config = {
     method: 'post',
     url: `http://localhost:8080/books`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
@@ -48,10 +45,7 @@ export function _deleteBook({ bookId }) {
   var config = {
     method: 'delete',
     url: `http://localhost:8080/books/${bookId}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    }
+    headers: {}
   };
 
   return axios(config)
@@ -80,9 +74,7 @@ export function _searchAllBook(pagination) {
   var config = {
     method: 'get',
     url: `http://localhost:8080/books?pageNumber=${pageNumber}&pageSize=${pageSize}`,
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: {},
     data: data
   };
 
@@ -135,10 +127,7 @@ export function _searchBookById({ bookId }) {
   var config = {
     method: 'get',
     url: `http://localhost:8080/books/${bookId}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
@@ -196,10 +185,7 @@ export function _searchBookByName({ bookName }) {
   var config = {
     method: 'get',
     url: `http://localhost:8080/books/name/${bookName}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
@@ -256,10 +242,7 @@ export function _updateBook({ bookId, pageCount, publisher, publicationDate }) {
   var config = {
     method: 'put',
     url: `http://localhost:8080/books/${bookId}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 

@@ -9,10 +9,7 @@ export function _addUser({ username, password }) {
   var config = {
     method: 'post',
     url: 'http://localhost:8080/users/',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
@@ -37,10 +34,7 @@ export function _deleteUser({ userId }) {
   var config = {
     method: 'delete',
     url: `http://localhost:8080/users/${userId}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    }
+    headers: {}
   };
 
   return axios(config)
@@ -66,10 +60,7 @@ export function _searchAllUsers(pagination) {
   var config = {
     method: 'get',
     url: `http://localhost:8080/users?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
@@ -123,10 +114,7 @@ export function _searchUserById({ userId }) {
   var config = {
     method: 'get',
     url: `http://localhost:8080/users/${userId}`,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': localStorage.getItem('Authorization')
-    },
+    headers: {},
     data: data
   };
 
