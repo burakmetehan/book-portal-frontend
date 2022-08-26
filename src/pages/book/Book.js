@@ -8,26 +8,26 @@ import BookList from "./BookList";
 
 const { Content } = Layout;
 
-const options = [
-  {
-    label: 'Add Book',
-    value: 'Add Book'
-  },
-  {
-    label: 'Update/Delete Book',
-    value: 'Update/Delete Book'
-  },
-  {
+export default function Book({ setHeaderKey, admin }) {
+  setHeaderKey('book');
+  const [radioValue, setRadioValue] = useState('Book List');
+  const options = admin ? [
+    {
+      label: 'Add Book',
+      value: 'Add Book'
+    },
+    {
+      label: 'Update/Delete Book',
+      value: 'Update/Delete Book'
+    },
+    {
+      label: 'Book List',
+      value: 'Book List'
+    }
+  ] : [{
     label: 'Book List',
     value: 'Book List'
-  }
-];
-
-const breadcrumbItems = ['Book'];
-
-export default function Book({ setHeaderKey }) {
-  setHeaderKey('book');
-  const [radioValue, setRadioValue] = useState('Update/Delete Book');
+  }];
 
   function onChange(event) {
     setRadioValue(event.target.value);
@@ -36,20 +36,9 @@ export default function Book({ setHeaderKey }) {
   return (
     <Layout
       style={{
-        padding: '0 24px 24px',
+        padding: '24px 24px 24px',
       }}
     >
-      <Breadcrumb
-        style={{
-          margin: '16px 0',
-        }}
-      >
-        {
-          breadcrumbItems.map((item) => {
-            return <Breadcrumb.Item>{item}</Breadcrumb.Item>
-          })
-        }
-      </Breadcrumb>
       <Radio.Group
         options={options}
         onChange={onChange}

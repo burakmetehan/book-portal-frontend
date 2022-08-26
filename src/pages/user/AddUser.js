@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, notification } from "antd";
 
 import { _addUser } from "../../service/UserService";
 
@@ -14,13 +14,27 @@ export default function AddUser() {
 
   /* ========== Event Listener Functions ========== */
   async function onFinish() {
-    const data = await _addUser(userData);
+    const response = await _addUser({
+      username: userData.username,
+      password: userData.password
+    });
 
-    if (data.successful) {
-      setIsSuccessful(true);
-    } else {
+    if (!response.successful) {
+      const config = {
+        description: 'Check Info!',
+        duration: 4.5,
+        key: 'on-finish-error',
+        message: 'Check Info! Re-enter and try again!',
+        placement: 'top'
+      }
+
+      notification.error(config);
       setIsSuccessful(false);
+
+      return;
     }
+
+    setIsSuccessful(true);
   }
 
   function onFinishFailed() {

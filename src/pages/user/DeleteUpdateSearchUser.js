@@ -201,9 +201,11 @@ export default function DeleteUpdateSearchUser() {
 
   // @TODO Change it
   async function handleUpdate(key, password) {
-    const data = await _updateUser({ userId: key, password: password })
+    const response = await _updateUser({ userId: key, newPassword: password })
 
-    if (!data.successful) { // Unsuccessful request
+    console.log(response)
+
+    if (!response.successful) { // Unsuccessful request
       window.alert("Error");
       return;
     }

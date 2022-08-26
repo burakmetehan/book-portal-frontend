@@ -6,29 +6,26 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import { _login } from '../../service/AuthService';
 
-export default function Login({ setIsAuthenticated }) {
+export default function Login({ setIsAuthenticated, setAdmin }) {
 
   async function onLoginFormFinish({ username, password, remember }) {
-    const responseData = await _login({ username, password })
+    const response = await _login({ username, password })
+    const { isAdmin, isValid, user, token } = response;
 
-    if (!responseData.successful) { // Not Successful
+    if (!response.successful || !isValid) { // Not Successful
       setIsAuthenticated(false);
       return;
     }
-
-    const { user } = responseData;
-    const { token } = responseData;
-
-    console.log(remember);
-
+    
     if (remember) {
       localStorage.setItem('Authorization', token);
       localStorage.setItem('Username', user.username);
     }
-
+    
     sessionStorage.setItem('Authorization', token);
     sessionStorage.setItem('Username', user.username);
-
+    
+    setAdmin(isAdmin);
     setIsAuthenticated(true);
   };
 
@@ -79,13 +76,6 @@ export default function Login({ setIsAuthenticated }) {
         <Form.Item name="remember" valuePropName="checked" noStyle>
           <Checkbox>Remember me</Checkbox>
         </Form.Item>
-
-        <Button
-          className="login-form-forgot"
-          type='link'
-        >
-          Forget password
-        </Button>
       </Form.Item>
 
       <Form.Item>
@@ -95,7 +85,6 @@ export default function Login({ setIsAuthenticated }) {
         >
           Log in
         </Button>
-        Or <a href="">register now!</a>
       </Form.Item>
     </Form>
   );
