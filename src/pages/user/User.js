@@ -1,10 +1,9 @@
+import { Layout, Radio } from "antd";
 import React, { useState } from "react";
 
-import { Layout, Radio, Breadcrumb } from "antd";
-
 import AddUser from "./AddUser";
-import DeleteUpdateSearchUser from "./DeleteUpdateSearchUser";
-import UpdateUser from "./update/UpdateUser"
+import DeleteUser from "./DeleteUser";
+import UpdateUser from "./update/UpdateUser";
 
 const { Content } = Layout;
 
@@ -14,8 +13,8 @@ const options = [
     value: 'Add User'
   },
   {
-    label: 'Update/Delete User',
-    value: 'Update/Delete User'
+    label: 'Delete User',
+    value: 'Delete User'
   },
   {
     label: 'Update User',
@@ -25,7 +24,8 @@ const options = [
 
 export default function User({ setHeaderKey }) {
   setHeaderKey('user');
-  const [value, setValue] = useState('Update/Delete User');
+  
+  const [value, setValue] = useState('Add User');
 
   function onChange(event) {
     setValue(event.target.value);
@@ -34,7 +34,7 @@ export default function User({ setHeaderKey }) {
   return (
     <Layout
       style={{
-        padding: '24px 24px 24px',
+        padding: '24px 24px',
       }}
     >
       <Radio.Group
@@ -56,8 +56,8 @@ function RenderSwitch({ option }) {
   switch (option) {
     case 'Add User':
       return <AddUser />;
-    case 'Update/Delete User':
-      return <DeleteUpdateSearchUser />;
+    case 'Delete User':
+      return <DeleteUser />;
     case 'Update User':
       return <UpdateUser />
     default:

@@ -9,7 +9,7 @@ import { _searchAllUsers, _searchUserById, _searchUserByUsername, _updateUser } 
 
 import { PAGINATION } from "../../../globals/GlobalVariables";
 
-import UserSearch from "../ASD";
+import UserSearch from "../UserSearch";
 
 export default function UpdateUser() {
   const [userId, setUserId] = useState(0);
