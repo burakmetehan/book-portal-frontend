@@ -21,10 +21,16 @@ export function _checkAuth() {
 
   return axios(config)
     .then(function (response) {
-      return response.data;
+      return {
+        successful: true,
+        ...response.data
+      }
     })
-    .catch(function (response) {
-      return response.data;
+    .catch(function (error) {
+      return {
+        successful: false,
+        ...error.data
+      } 
     })
 }
 
@@ -50,7 +56,7 @@ export function _login({ username, password }) {
         ...response.data
       }
     })
-    .catch(function (error) {
+    .catch(function () {
       return {
         successful: false
       }

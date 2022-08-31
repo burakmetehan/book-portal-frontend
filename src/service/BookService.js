@@ -32,7 +32,6 @@ export function _addBook({
       };
     })
     .catch(function () {
-      console.error("Error in adding book!")
       return {
         successful: false
       };
@@ -56,7 +55,6 @@ export function _deleteBook({ bookId }) {
       };
     })
     .catch(function () {
-      console.error("Error in delete book!")
       return {
         successful: false
       };
@@ -66,16 +64,15 @@ export function _deleteBook({ bookId }) {
 export function _searchAllBook(pagination) {
 
   var axios = require('axios');
-  var data = JSON.stringify({});
-
-  const pageNumber = pagination.pageNumber || 0;
-  const pageSize = pagination.pageSize || 10;
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books?pageNumber=${pageNumber}&pageSize=${pageSize}`,
+    url: `http://localhost:8080/books`,
     headers: {},
-    data: data
+    param:{
+      pageNumber: pagination.pageNumber,
+      pageSize: pagination.pageSize
+    }
   };
 
   return axios(config)
@@ -96,13 +93,11 @@ export function _searchAllBook(pagination) {
 export function _searchAllBookList() {
 
   var axios = require('axios');
-  var data = JSON.stringify({});
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/no-pagination`,
-    headers: {},
-    data: data
+    url: `http://localhost:8080/books/no-page`,
+    headers: {}
   };
 
   return axios(config)
@@ -122,13 +117,11 @@ export function _searchAllBookList() {
 export function _searchBookById({ bookId }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({});
 
   var config = {
     method: 'get',
     url: `http://localhost:8080/books/${bookId}`,
-    headers: {},
-    data: data
+    headers: {}
   };
 
   return axios(config)
@@ -139,7 +132,6 @@ export function _searchBookById({ bookId }) {
       };
     })
     .catch(function () {
-      console.error("Error in adding book!")
       return {
         successful: false
       };
@@ -149,13 +141,11 @@ export function _searchBookById({ bookId }) {
 export function _searchBookByIdList({ bookId }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({});
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/no-pagination/${bookId}`,
-    headers: {},
-    data: data
+    url: `http://localhost:8080/books/no-page/${bookId}`,
+    headers: {}
   };
 
   return axios(config)
@@ -172,21 +162,18 @@ export function _searchBookByIdList({ bookId }) {
     });
 }
 
-/**
- * Searching books that contains the given bookName.
- * @param {String} bookName Name of the book(s) to be searched
- * @returns Paged book(s)
- */
-export function _searchBookByName({ bookName }) {
+export function _searchBookByName({ bookName, pageNumber, pageSize }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({});
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/name/${bookName}`,
+    url: `http://localhost:8080/books/name?bookName=${bookName}`,
     headers: {},
-    data: data
+    params: {
+      pageNumber: pageNumber,
+      pageSize: pageSize
+    }
   };
 
   return axios(config)
@@ -197,7 +184,6 @@ export function _searchBookByName({ bookName }) {
       };
     })
     .catch(function () {
-      console.error("Error in adding book!")
       return {
         successful: false
       };
@@ -207,13 +193,14 @@ export function _searchBookByName({ bookName }) {
 export function _searchBookByNameList({ bookName }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({});
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/no-pagination/name/${bookName}`,
+    url: `http://localhost:8080/books/no-page/name`,
     headers: {},
-    data: data
+    params: {
+      bookName: bookName
+    }
   };
 
   return axios(config)
@@ -234,9 +221,9 @@ export function _updateBook({ bookId, pageCount, publisher, publicationDate }) {
 
   var axios = require('axios');
   var data = JSON.stringify({
-    "pageCount": pageCount,
-    "publisher": publisher,
-    "publicationDate": publicationDate
+    "pageCount": pageCount || "",
+    "publisher": publisher || "",
+    "publicationDate": publicationDate || ""
   });
 
   var config = {
@@ -254,7 +241,6 @@ export function _updateBook({ bookId, pageCount, publisher, publicationDate }) {
       };
     })
     .catch(function () {
-      console.error("Error in adding book!")
       return {
         successful: false
       };

@@ -17,7 +17,7 @@ export function _addUser({ username, password }) {
     .then(function (response) {
       return { 
         successful: true, 
-        ...response.data 
+        data: response.data 
       };
     })
     .catch(function () {
@@ -54,14 +54,15 @@ export function _deleteUser({ userId }) {
 export function _searchAllUsers(pagination) {
 
   var axios = require('axios');
-  var data = JSON.stringify({
-  });
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`,
+    url: `http://localhost:8080/users`,
     headers: {},
-    data: data
+    params: {
+      pageNumber: pagination.pageNumber,
+      pageSize: pagination.pageSize
+    }
   };
 
   return axios(config)
@@ -81,14 +82,11 @@ export function _searchAllUsers(pagination) {
 export function _searchAllUsersList() {
 
   var axios = require('axios');
-  var data = JSON.stringify({
-  });
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/no-pagination`,
-    headers: {},
-    data: data
+    url: `http://localhost:8080/users/no-page`,
+    headers: {}
   };
 
   return axios(config)
@@ -108,14 +106,11 @@ export function _searchAllUsersList() {
 export function _searchUserById({ userId }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({
-  });
 
   var config = {
     method: 'get',
     url: `http://localhost:8080/users/${userId}`,
-    headers: {},
-    data: data
+    headers: {}
   };
 
   return axios(config)
@@ -135,14 +130,11 @@ export function _searchUserById({ userId }) {
 export function _searchUserByIdList({ userId }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({
-  });
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/no-pagination/${userId}`,
-    headers: {},
-    data: data
+    url: `http://localhost:8080/users/no-page/${userId}`,
+    headers: {}
   };
 
   return axios(config)
@@ -159,22 +151,19 @@ export function _searchUserByIdList({ userId }) {
     });
 }
 
-/**
- * Searching users that contains the given username.
- * @param {String} username Name of the users(s) to be searched
- * @returns Paged user(s)
- */
-export function _searchUserByName({ username, pagination }) {
+export function _searchUserByUsername({ username, pagination }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({
-  });
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/name/${username}?pageNumber=${pagination.pageNumber}&pageSize=${pagination.pageSize}`,
+    url: `http://localhost:8080/users/username`,
     headers: {},
-    data: data
+    params: {
+      username: username,
+      pageNumber: pagination.pageNumber,
+      pageSize: pagination.pageSize
+    }
   };
 
   return axios(config)
@@ -194,14 +183,14 @@ export function _searchUserByName({ username, pagination }) {
 export function _searchUserByUsernameList({ username }) {
 
   var axios = require('axios');
-  var data = JSON.stringify({
-  });
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/no-pagination/name/${username}`,
+    url: `http://localhost:8080/users/no-page/username`,
     headers: {},
-    data: data
+    params: {
+      username: username
+    }
   };
 
   return axios(config)
@@ -209,33 +198,6 @@ export function _searchUserByUsernameList({ username }) {
       return { 
         successful: true, 
         data: response.data
-      };
-    })
-    .catch(function () {
-      return { 
-        successful: false 
-      };
-    });
-}
-
-export function _searchUserByUsername({ username }) {
-
-  var axios = require('axios');
-  var data = JSON.stringify({
-  });
-
-  var config = {
-    method: 'get',
-    url: `http://localhost:8080/users/name?username=${username}`,
-    headers: {},
-    data: data
-  };
-
-  return axios(config)
-    .then(function (response) {
-      return { 
-        successful: true, 
-        ...response.data 
       };
     })
     .catch(function () {
@@ -263,10 +225,10 @@ export function _updateUser({ userId, newPassword }) {
     .then(function (response) {
       return { 
         successful: true, 
-        ...response.data 
+        data: [response.data] 
       };
     })
-    .catch(function () {
+    .catch(function (res) {
       return { 
         successful: false 
       };

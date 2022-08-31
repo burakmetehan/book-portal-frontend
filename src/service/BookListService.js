@@ -4,8 +4,13 @@ export function _addFavoriteList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/ar/a/favoriteList?userId=${userId}&bookId=${bookId}`,
-    headers: {}
+    url: `http://localhost:8080/fav`,
+    headers: {},
+    params: {
+      userId: userId,
+      bookId: bookId,
+      isAdd: true
+    }
   };
 
   return axios(config)
@@ -28,8 +33,13 @@ export function _addReadList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/ar/a/readList?userId=${userId}&bookId=${bookId}`,
-    headers: {}
+    url: `http://localhost:8080/read`,
+    headers: {},
+    params: {
+      userId: userId,
+      bookId: bookId,
+      isAdd: true
+    }
   };
 
   return axios(config)
@@ -53,8 +63,13 @@ export function _removeFavoriteList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/ar/r/favoriteList?userId=${userId}&bookId=${bookId}`,
-    headers: {}
+    url: `http://localhost:8080/fav`,
+    headers: {},
+    params: {
+      userId: userId,
+      bookId: bookId,
+      isAdd: false
+    }
   };
 
   return axios(config)
@@ -77,8 +92,13 @@ export function _removeReadList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/ar/r/readList?userId=${userId}&bookId=${bookId}`,
-    headers: {}
+    url: `http://localhost:8080/read`,
+    headers: {},
+    params: {
+      userId: userId,
+      bookId: bookId,
+      isAdd: false
+    }
   };
 
   return axios(config)
