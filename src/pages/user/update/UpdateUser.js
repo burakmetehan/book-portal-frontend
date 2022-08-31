@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, InputNumber, notification, Pagination, Radio, Row } from "antd";
+import { notification, Pagination } from "antd";
 import "antd/dist/antd.css";
 import React, { useEffect, useRef, useState } from "react";
 
@@ -10,17 +10,6 @@ import { _searchAllUsers, _searchUserById, _searchUserByUsername, _updateUser } 
 import { PAGINATION } from "../../../globals/GlobalVariables";
 
 import UserSearch from "../ASD";
-
-const searchOptions = [
-  {
-    label: "Search User By ID",
-    value: "Search User By ID"
-  },
-  {
-    label: "Search User By Username",
-    value: "Search User By Username"
-  }
-];
 
 export default function UpdateUser() {
   const [userId, setUserId] = useState(0);
@@ -298,68 +287,6 @@ export default function UpdateUser() {
         radioValue={radioValue}
         handleRadioValueChange={handleRadioValueChange}
       />
-
-
-      {/* <Radio.Group
-        options={searchOptions}
-        onChange={handleRadioValueChange}
-        value={radioValue}
-        optionType="default"
-      />
-
-      <div className='search-forms'>
-        <Row>
-          {
-            radioValue === "Search User By ID" ?
-              <Col span={12}>
-                <Form
-                  onFinish={handleUserSearchById}
-                  onFinishFailed={() => console.log("Failed in Search User By Id!")}
-                >
-                  <Form.Item
-                    label="Search User By Id"
-                    rules={[{ message: 'Please input an integer greater than or equal to 0!' }]}
-                  >
-                    <InputNumber
-                      min={0}
-                      id="userId"
-                      name="userId"
-                      value={userId}
-                      onChange={handleUserIdChange}
-                    />
-
-                    <Button type="primary" htmlType="submit">
-                      Search
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Col>
-              :
-              <Col span={12}>
-                <Form
-                  onFinish={handleUserSearchByUsername}
-                  onFinishFailed={() => console.log("Failed in Search User By Name!")}
-                >
-                  <Form.Item
-                    label="Search User By Name"
-                    rules={[{ message: 'Please input username' }]}
-                  >
-                    <Input
-                      id="username"
-                      name="username"
-                      value={username}
-                      onChange={handleUsernameChange}
-                    />
-
-                    <Button type="primary" htmlType="submit">
-                      Search
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Col>
-          }
-        </Row>
-      </div> */}
 
       <div className='user-show'>
         <h1>Users</h1>

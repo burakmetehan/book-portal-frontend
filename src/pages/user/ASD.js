@@ -1,8 +1,6 @@
-import { Button, Col, Form, Input, InputNumber, notification, Pagination, Radio, Row } from "antd";
+import { Button, Col, Form, Input, InputNumber, Radio, Row } from "antd";
 import "antd/dist/antd.css";
-import React, { useEffect, useRef, useState } from "react";
-
-import { _searchAllUsers, _searchUserById, _searchUserByUsername, _updateUser } from "../../service/UserService";
+import React from "react";
 
 export default function UserSearch({
   userId, setUserId, handleUserSearchById,
@@ -20,7 +18,7 @@ export default function UserSearch({
   function handleUsernameChange(event) {
     setUsername(event.target.value);
   }
-  
+
   return (
     <>
       <Radio.Group
