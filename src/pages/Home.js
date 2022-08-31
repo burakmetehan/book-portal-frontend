@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  Alert, Avatar, Button, Breadcrumb, Card, Collapse,
-  Descriptions, Form, Input, Layout, message, notification, Table
-} from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import {
+  Alert, Avatar, Button, Card, Collapse,
+  Descriptions, Form, Input, Layout, notification, Table
+} from 'antd';
 
-import { _searchUserByUsername, _updateUser } from "../service/UserService";
+import { _searchUserByUsernameList, _updateUser } from "../service/UserService";
 
-import BOOK_COLUMNS from "../global-vars/BookColumns";
+import { BOOK_COLUMNS, PAGINATION } from "../globals/GlobalVariables";
 
 const { Content } = Layout;
 const { Panel } = Collapse;
@@ -17,18 +17,7 @@ export default function Home({ setIsAuthenticated, setHeaderKey }) {
   setHeaderKey('home');
 
   return (
-    <Layout
-      style={{
-        padding: '0 24px 24px',
-      }}
-    >
-      <Breadcrumb
-        style={{
-          margin: '16px 0',
-        }}
-      >
-        <Breadcrumb.Item>Home</Breadcrumb.Item>
-      </Breadcrumb>
+    <Layout>
       <HomeContent setIsAuthenticated={setIsAuthenticated} />
     </Layout>
   );
@@ -41,11 +30,11 @@ function HomeContent({ setIsAuthenticated }) {
   /* ========== Use Effect ========== */
   useEffect(() => {
     async function getUserData() {
-      const userData = await _searchUserByUsername({
+      const response = await _searchUserByUsernameList({
         username: sessionStorage.getItem('Username')
       });
 
-      if (!userData.successful) { // Not successful
+      if (!response.successful) { // Not successful
         localStorage.clear();
         sessionStorage.clear();
 
@@ -54,7 +43,7 @@ function HomeContent({ setIsAuthenticated }) {
         return;
       }
 
-      setUserData(userData);
+      setUserData(response.data && response.data[0]);
     }
 
     getUserData();
@@ -62,9 +51,9 @@ function HomeContent({ setIsAuthenticated }) {
 
   /* ========== Password Change ========== */
   async function passwordChange({ password }) {
-    const responseData = await _updateUser({ userId: userData.id, newPassword: password });
+    const response = await _updateUser({ userId: userData.id, newPassword: password });
 
-    if (!responseData.successful) { // Not successful
+    if (!response.successful) { // Not successful
       const config = {
         description: 'Password Change Error!',
         duration: 4.5,
@@ -86,7 +75,7 @@ function HomeContent({ setIsAuthenticated }) {
       notification.success(config);
     }
 
-    setUserData(userData);
+    setUserData(response.data);
 
     localStorage.clear();
     sessionStorage.clear();
@@ -94,6 +83,7 @@ function HomeContent({ setIsAuthenticated }) {
     setIsAuthenticated(false);
   }
 
+  /* ========== Event Listeners ========== */
   function onUserUpdateFormFinish({ password }) {
     passwordChange({ password });
     setIsChangePassword(false);

@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
 
-import "./App.css";
+import { BookOutlined, HomeOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { Layout, Menu, Popconfirm } from "antd";
+
+import "antd/dist/antd.css";
 
 import Login from "./pages/auth/Login";
-import { _checkAuth, _login } from "./service/AuthService";
-
-import 'antd/dist/antd.css';
-
-import { BookOutlined, HomeOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Layout, Menu, Popconfirm, Button } from 'antd';
-
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
-import Home from './pages/Home';
-import User from "./pages/user/User";
 import Book from "./pages/book/Book";
-import Logout from "./pages/auth/Logout";
+import Home from "./pages/Home";
+import User from "./pages/user/User";
+
+import { _checkAuth } from "./service/AuthService";
 
 const { Header, Content } = Layout;
 
@@ -39,11 +35,10 @@ export default function App() {
 
   useEffect(() => {
     async function checkAuth() {
-      const responseData = await _checkAuth();
+      const response = await _checkAuth();
+      const { isAdmin, isValid, token, username } = response;
 
-      const { isAdmin, isValid, token, username } = responseData;
-
-      if (isValid && token && username) {
+      if (response.successful && isValid && token && username) {
         localStorage.setItem('Username', username)
         localStorage.setItem('Authorization', token);
 
@@ -132,7 +127,7 @@ export default function App() {
                     <Book setHeaderKey={setHeaderKey} admin={admin} />
                   </Route>
                   <Route path="/logout">
-                    <Logout setHeaderKey={setHeaderKey} />
+                    <></>
                   </Route>
                 </Switch>
               </Content>
