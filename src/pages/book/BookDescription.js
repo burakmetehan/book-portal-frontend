@@ -1,8 +1,8 @@
-import React from "react";
-import "antd/dist/antd.css";
 import { Descriptions } from "antd";
+import "antd/dist/antd.css";
+import React from "react";
 
-export default function AddBook({ bookData }) {
+export default function BookDescription({ bookData }) {
   return (
     <Descriptions
       title="Book Info"
@@ -16,6 +16,7 @@ export default function AddBook({ bookData }) {
         xs: 1,
       }}
     >
+      <Descriptions.Item label="Book ID">{bookData.id || "Book ID"}</Descriptions.Item>
       <Descriptions.Item label="Book Name">{bookData.name || "Book Name"}</Descriptions.Item>
       <Descriptions.Item label="Author">{bookData.author || "Author"}</Descriptions.Item>
       <Descriptions.Item label="Page Count">{bookData.pageCount || "Page Count"}</Descriptions.Item>

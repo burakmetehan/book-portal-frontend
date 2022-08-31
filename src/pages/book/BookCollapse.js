@@ -1,17 +1,14 @@
+import { Button, Collapse, Form, Input, InputNumber, Popconfirm, Space, notification } from "antd";
 import React, { useState } from "react";
-import { Table, Collapse, Button, Space, Form, Input, Popconfirm, InputNumber } from "antd";
 
 import BookDescription from "./BookDescription";
 
 const { Panel } = Collapse;
 
 export default function BookCollapse({ book, handleDelete, handleUpdate }) {
-
   const [isUpdateBook, setIsUpdateBook] = useState(false);
 
-  function onBookUpdateFormFinish({ pageCount, publisher, publicationDate }) {
-    console.log(pageCount, publisher, publicationDate)
-
+  function handleBookUpdateFormFinish({ pageCount, publisher, publicationDate }) {
     if (pageCount == null || pageCount == undefined) {
       pageCount = 0;
     }
@@ -26,12 +23,21 @@ export default function BookCollapse({ book, handleDelete, handleUpdate }) {
 
     handleUpdate(book.id, pageCount, publisher, publicationDate);
     setIsUpdateBook(false);
-    window.alert("Book is updated");
+
+    const config = {
+      description: 'Book is successfully updated!',
+      duration: 4.5,
+      key: 'login-credential-error',
+      message: 'Book is updated!',
+      placement: 'top'
+    }
+
+    notification.success(config);
   };
 
   return (
     <Collapse>
-      <Panel header={`${book.name}`} key={book.key}>
+      <Panel header={`${book.name}`} key={book.id}>
         <p>This is the data of <b>{book.name}</b>.</p>
 
         <BookDescription bookData={book} />
@@ -39,7 +45,7 @@ export default function BookCollapse({ book, handleDelete, handleUpdate }) {
         <Space>
           <Popconfirm
             title="Are you sure to delete the book?"
-            onConfirm={() => handleDelete(book.key)}
+            onConfirm={() => handleDelete(book.id)}
           >
             <Button
               type="primary"
@@ -58,38 +64,11 @@ export default function BookCollapse({ book, handleDelete, handleUpdate }) {
           </Button>
         </Space>
 
-        {isUpdateBook && <BookUpdateForm onFinish={onBookUpdateFormFinish} />}
+        {isUpdateBook && <BookUpdateForm onFinish={handleBookUpdateFormFinish} />}
       </Panel>
     </Collapse>
   );
 }
-
-const bookColumns = [
-  {
-    title: 'Book Name',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Author',
-    dataIndex: 'author',
-  },
-  {
-    title: 'Page Count',
-    dataIndex: 'pageCount',
-  },
-  {
-    title: 'Type',
-    dataIndex: 'type',
-  },
-  {
-    title: 'Publisher',
-    dataIndex: 'publisher',
-  },
-  {
-    title: 'Publication Date',
-    dataIndex: 'publicationDate',
-  }
-];
 
 function BookUpdateForm({ onFinish }) {
   const [form] = Form.useForm();

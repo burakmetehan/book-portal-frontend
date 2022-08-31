@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import { Button, Form, Input, InputNumber, Radio } from "antd";
 import "antd/dist/antd.css";
-import { Form, Input, InputNumber, Radio, Button } from "antd";
+import React, { useState } from "react";
 
-export default function BookForm({ bookData, onBookDataChange, onBookFormFinish, onBookFormFail }) {
-
+export default function BookForm({ bookData, handleBookDataChange, handleBookFormFinish, handleBookFormFail }) {
   const [componentSize, setComponentSize] = useState("default");
 
-  const onFormLayoutChange = ({ size }) => {
+  const handleFormLayoutChange = ({ size }) => {
     setComponentSize(size);
   };
 
@@ -22,10 +21,10 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish,
       initialValues={{
         size: componentSize
       }}
-      onValuesChange={onFormLayoutChange}
+      onValuesChange={handleFormLayoutChange}
       size={componentSize}
-      onFinish={onBookFormFinish}
-      onFinishFailed={onBookFormFail}
+      onFinish={handleBookFormFinish}
+      onFinishFailed={handleBookFormFail}
     >
       <Form.Item label="Form Size" name="size">
         <Radio.Group>
@@ -38,7 +37,7 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish,
       <Form.Item
         label="Book Name"
         name="name"
-        onChange={onBookDataChange}
+        onChange={handleBookDataChange}
         rules={[
           {
             required: true,
@@ -55,7 +54,7 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish,
       <Form.Item
         label="Author"
         name="author"
-        onChange={onBookDataChange}
+        onChange={handleBookDataChange}
         rules={[
           {
             required: true,
@@ -74,7 +73,7 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish,
       <Form.Item
         label="Page Count"
         name="pageCount"
-        onChange={onBookDataChange}
+        onChange={handleBookDataChange}
         rules={[
           {
             required: true,
@@ -95,7 +94,7 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish,
       <Form.Item
         label="Type"
         name="type"
-        onChange={onBookDataChange}
+        onChange={handleBookDataChange}
         rules={[
           {
             required: true,
@@ -114,7 +113,7 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish,
       <Form.Item
         label="Publisher"
         name="publisher"
-        onChange={onBookDataChange}
+        onChange={handleBookDataChange}
         rules={[
           {
             required: true,
@@ -132,7 +131,7 @@ export default function BookForm({ bookData, onBookDataChange, onBookFormFinish,
       <Form.Item
         label="Publication Date"
         name="publicationDate"
-        onChange={onBookDataChange}
+        onChange={handleBookDataChange}
         rules={[
           {
             required: true,

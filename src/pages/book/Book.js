@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 
-import { Layout, Radio, Breadcrumb } from "antd";
+import { Layout, Radio } from "antd";
 
 import AddBook from "./AddBook";
-import DeleteUpdateSearchBook from "./DeleteUpdateSearchBook";
 import BookList from "./BookList";
+import DeleteUpdateSearchBook from "./DeleteUpdateSearchBook";
 
 const { Content } = Layout;
 
 export default function Book({ setHeaderKey, admin }) {
   setHeaderKey('book');
+
   const [radioValue, setRadioValue] = useState('Book List');
   const options = admin ? [
     {
@@ -29,7 +30,7 @@ export default function Book({ setHeaderKey, admin }) {
     value: 'Book List'
   }];
 
-  function onChange(event) {
+  function handleRadioChange(event) {
     setRadioValue(event.target.value);
   };
 
@@ -41,7 +42,7 @@ export default function Book({ setHeaderKey, admin }) {
     >
       <Radio.Group
         options={options}
-        onChange={onChange}
+        onChange={handleRadioChange}
         value={radioValue}
         optionType="button"
         buttonStyle="solid"
@@ -65,5 +66,4 @@ function RenderSwitch({ option }) {
     default:
       return <h1>Error</h1>;
   }
-
 }

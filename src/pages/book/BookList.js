@@ -1,6 +1,9 @@
-import React, { useEffect, useRef, useState } from "react";
+import { Button, Col, Form, Input, InputNumber, notification, Radio, Row, Space, Table } from 'antd';
 import "antd/dist/antd.css";
-import { Button, Space, Table, Row, Col, Form, InputNumber, Input, notification, Radio } from 'antd';
+import React, { useEffect, useRef, useState } from "react";
+
+import { BOOK_COLUMNS, PAGINATION } from "../../globals/GlobalVariables";
+import { BookContentParserWithUserListInfo } from "./BookContentParser";
 
 import {
   _addFavoriteList,
@@ -9,9 +12,7 @@ import {
   _removeReadList
 } from "../../service/BookListService";
 import { _searchAllBook, _searchBookById, _searchBookByName } from "../../service/BookService";
-import { _searchUserByUsername } from "../../service/UserService";
-
-import { BookContentParserWithUserListInfo } from "./BookContentParser";
+import { _searchUserByUsernameList } from "../../service/UserService";
 
 const options = [
   {
@@ -24,38 +25,10 @@ const options = [
   }
 ];
 
+
 export default function BookList() {
   const bookColumns = [
-    {
-      title: 'Book Name',
-      dataIndex: 'name',
-      key: 'name'
-    },
-    {
-      title: 'Author',
-      dataIndex: 'author',
-      key: 'author'
-    },
-    {
-      title: 'Page Count',
-      dataIndex: 'pageCount',
-      key: 'pageCount'
-    },
-    {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type'
-    },
-    {
-      title: 'Publisher',
-      dataIndex: 'publisher',
-      key: 'publisher'
-    },
-    {
-      title: 'Publication Date',
-      dataIndex: 'publicationDate',
-      key: 'publicationDate'
-    },
+    ...BOOK_COLUMNS,
     {
       title: 'Action',
       key: 'action',
@@ -103,13 +76,7 @@ export default function BookList() {
   }]);
 
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState({
-    showSizeChanger: true,
-    current: 1, // Current page number
-    pageNumber: 0, // Page number for backend call
-    pageSize: 5, // Page size for both table and backend call
-    total: 0 // Total number of data items
-  })
+  const [pagination, setPagination] = useState(PAGINATION)
 
   /* ========== Refs ========== */
   const isFirstRenderUserId = useRef(true); // Variable to block run in first render
@@ -122,16 +89,26 @@ export default function BookList() {
       setLoading(true);
 
       const username = sessionStorage.getItem('Username'); // Getting username from sessionStorage
-      const responseData = await _searchUserByUsername({ username }); // Database call for search by username
+      const response = await _searchUserByUsernameList({ username }); // Database call for search by username
 
-      if (!responseData.successful) { // Not successful
-        window.alert("Error in searchUser in SearchBook!");
+      if (!response.successful) { // Not successful
+        const config = {
+          description: 'An error occurred while searching user! Try Logging out and Logging in again!',
+          duration: 4.5,
+          key: 'book-list-search-user-error',
+          message: 'User is not found!',
+          placement: 'top'
+        }
+  
+        notification.error(config);
         return;
       }
 
-      setUserId(responseData.id);
-      setReadBooks(responseData.readList.map(book => book.id));
-      setFavoriteBooks(responseData.favoriteList.map(book => book.id));
+      const user = response.data && response.data[0];
+
+      setUserId(user.id);
+      setReadBooks(user.readList.map(book => book.id));
+      setFavoriteBooks(user.favoriteList.map(book => book.id));
 
       setLoading(false);
     }
@@ -144,20 +121,28 @@ export default function BookList() {
     async function searchAllBook() {
       setLoading(true);
 
-      const responseData = await _searchAllBook(pagination); // searching books by pagination
+      const response = await _searchAllBook(pagination); // searching books by pagination
 
-      if (!responseData.successful) { // Not successful
-        window.alert("Error in searchAllBook in SearchBook!");
+      if (!response.successful) { // Not successful
+        const config = {
+          description: 'An error occurred while searching books! Try again!',
+          duration: 4.5,
+          key: 'book-list-search-all-book-error',
+          message: 'Books are not found!',
+          placement: 'top'
+        }
+  
+        notification.error(config);
         return;
       }
 
       // setting total elements in the beginning
       setPagination({
         ...pagination,
-        total: responseData.totalElements
+        total: response.totalElements
       })
 
-      const newContent = BookContentParserWithUserListInfo(responseData, favoriteBooks, readBooks);
+      const newContent = BookContentParserWithUserListInfo(response, favoriteBooks, readBooks);
 
       setBookData(newContent);
 
@@ -178,19 +163,19 @@ export default function BookList() {
     async function searchAllBook() {
       setLoading(true);
 
-      const responseData = await _searchAllBook(pagination);
+      const response = await _searchAllBook(pagination);
 
-      if (!responseData.successful) { // Not successful
+      if (!response.successful) { // Not successful
         return;
       }
 
-      const newContent = BookContentParserWithUserListInfo(responseData, favoriteBooks, readBooks);
+      const newContent = BookContentParserWithUserListInfo(response, favoriteBooks, readBooks);
 
       setIsSearchAll(false); // Block infinite loop search because of the pagination state change below
       setBookData(newContent);
       setPagination({
         ...pagination,
-        total: responseData.totalElements
+        total: response.totalElements
       })
 
       setLoading(false);
@@ -209,15 +194,11 @@ export default function BookList() {
     searchAllBook();
   }, [pagination]);
 
-  //
+  // useEffect when bookId or bookName is reset
   useEffect(() => {
     setIsSearchAll(true);
     setPagination({
-      showSizeChanger: true,
-      current: 1, // Current page number
-      pageNumber: 0, // Page number for backend call
-      pageSize: 5, // Page size for both table and backend call
-      total: 0
+      ...PAGINATION
     });
   }, [bookId == null, bookName === ""]);
 
@@ -232,80 +213,94 @@ export default function BookList() {
     });
   }
 
-  function onBookIdChange(newId) {
+  function handleBookIdChange(newId) {
     setBookId(newId);
   }
 
-  function onBookNameChange(event) {
+  function handleBookNameChange(event) {
     setBookName(event.target.value);
   }
 
-  function onChangeRadioValue(event) {
+  function handleChangeRadioValue(event) {
     setRadioValue(event.target.value);
   };
 
   async function handleFavoriteList(id, key) {
-    let responseData;
+    let response;
     const isAdd = !(bookData[key].isFavorite);
 
     if (isAdd) {
-      responseData = await _addFavoriteList({ userId, bookId: id });
+      response = await _addFavoriteList({ userId, bookId: id });
       bookData[key].isFavorite = true;
       setFavoriteBooks([
         ...favoriteBooks,
         bookData[key].id
       ]);
     } else {
-      responseData = await _removeFavoriteList({ userId, bookId: id });
+      response = await _removeFavoriteList({ userId, bookId: id });
       bookData[key].isFavorite = false;
-      
+
       const newFavoriteBooks = favoriteBooks.filter((bookId) => {
         return bookId !== bookData[key].id;
       })
-      
+
       setFavoriteBooks(newFavoriteBooks);
     }
 
-    if (!responseData.successful) { // Not successful
+    if (!response.successful) { // Not successful
       bookData[key].isFavorite = !(bookData[key].isFavorite);
-      window.alert("Error handleFav");
-      console.log("fail")
+      const config = {
+        description: 'An error is occured while handling favorite lists!',
+        duration: 4.5,
+        key: 'book-list-handle-fav-error',
+        message: 'Error in handleFav',
+        placement: 'top'
+      }
+
+      notification.error(config);
+      return;
     }
 
-    console.log("success")
     const newContent = [...bookData];
     setBookData(newContent);
   }
 
   async function handleReadList(id, key) {
-    let responseData;
+    let response;
     const isAdd = !(bookData[key].isRead);
 
     if (isAdd) {
-      responseData = await _addReadList({ userId, bookId: id });
+      response = await _addReadList({ userId, bookId: id });
       bookData[key].isRead = true;
       setReadBooks([
         ...readBooks,
         bookData[key].id
       ]);
     } else {
-      responseData = await _removeReadList({ userId, bookId: id });
+      response = await _removeReadList({ userId, bookId: id });
       bookData[key].isRead = false;
 
       const newReadBooks = readBooks.filter((bookId) => {
         return bookId !== bookData[key].id;
       })
-      
+
       setFavoriteBooks(newReadBooks);
     }
 
-    if (!responseData.successful) { // Not successful
+    if (!response.successful) { // Not successful
       bookData[key].isRead = !(bookData[key].isRead);
-      window.alert("Error handleFav");
-      console.log("fail")
+      const config = {
+        description: 'An error is occured while handling read lists!',
+        duration: 4.5,
+        key: 'book-list-handle-read-error',
+        message: 'Error in handleRead',
+        placement: 'top'
+      }
+
+      notification.error(config);
+      return;
     }
 
-    console.log("success")
     const newContent = [...bookData];
     setBookData(newContent);
   }
@@ -313,10 +308,10 @@ export default function BookList() {
   async function handleBookSearchById() {
     if (bookId < 0) {
       const config = {
-        description: 'Check Book ID!',
+        description: 'Check Book ID! Book ID should be greater than or equal to 0!',
         duration: 4.5,
         key: 'handle-book-search-by-id-warning',
-        message: 'Check Book ID! Book ID should be greater than or equal to 0!',
+        message: 'Check Book ID!',
         placement: 'top'
       }
 
@@ -331,10 +326,10 @@ export default function BookList() {
       setBookData([]);
 
       const config = {
-        description: 'Book is not found!',
+        description: 'Book could not be found! Check book id and try again!',
         duration: 4.5,
         key: 'handle-book-search-by-id-error',
-        message: 'Book could not be found! Check book id and try again!',
+        message: 'Book is not found!',
         placement: 'top'
       }
 
@@ -359,10 +354,10 @@ export default function BookList() {
   async function handleBookSearchByName() {
     if (bookName == null || bookName === "") {
       const config = {
-        description: 'Check Book Name!',
+        description: 'Check Book Name! Book name should be provided!',
         duration: 4.5,
         key: 'handle-book-search-by-name-error',
-        message: 'Check Book Name! Book name should be provided!',
+        message: 'Check Book Name!',
         placement: 'top'
       }
 
@@ -377,10 +372,10 @@ export default function BookList() {
       setBookData([]);
 
       const config = {
-        description: 'Book is not found!',
+        description: 'Book could not be found! Check book name and try again!',
         duration: 4.5,
         key: 'handle-book-search-by-name-error',
-        message: 'Book could not be found! Check book name and try again!',
+        message: 'Book is not found!',
         placement: 'top'
       }
 
@@ -406,7 +401,7 @@ export default function BookList() {
     <>
       <Radio.Group
         options={options}
-        onChange={onChangeRadioValue}
+        onChange={handleChangeRadioValue}
         value={radioValue}
         optionType="default"
       />
@@ -428,7 +423,7 @@ export default function BookList() {
                       id="bookId"
                       name="bookId"
                       value={bookId}
-                      onChange={onBookIdChange}
+                      onChange={handleBookIdChange}
                     />
 
                     <Button type="primary" htmlType="submit">
@@ -450,7 +445,7 @@ export default function BookList() {
                       id="name"
                       name="name"
                       value={bookName}
-                      onChange={onBookNameChange}
+                      onChange={handleBookNameChange}
                     />
 
                     <Button type="primary" htmlType="submit">

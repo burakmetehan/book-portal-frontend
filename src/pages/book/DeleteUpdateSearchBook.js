@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { Button, Col, Form, Input, InputNumber, Row, notification } from "antd";
 import "antd/dist/antd.css";
-import { Form, Input, InputNumber, Button, Col, Row } from "antd";
-import { _deleteBook, _searchAllBook, _searchAllBookList, _searchBookById, _searchBookByIdList, _searchBookByName, _searchBookByNameList, _updateBook } from '../../service/BookService';
+import React, { useEffect, useState } from 'react';
 
-import BookContentParser, { BookListParser } from "./BookContentParser";
+import { BookListParser } from "./BookContentParser";
 import BookShow from "./BookShow";
+
+import { _deleteBook, _searchAllBookList, _searchBookByIdList, _searchBookByNameList, _updateBook } from '../../service/BookService';
 
 export default function DeleteUpdateSearchBook() {
   const [bookId, setBookId] = useState(0);
@@ -38,17 +39,26 @@ export default function DeleteUpdateSearchBook() {
   }, [bookId != null, bookName !== ""]);
 
   /* ========== Event Listener Functions ========== */
-  function onBookIdChange(newId) {
+  function handleBookIdChange(newId) {
     setBookId(newId);
   }
 
-  function onBookNameChange(event) {
+  function handleBookNameChange(event) {
     setBookName(event.target.value);
   }
 
-  async function onBookSearchById() {
+  async function handleBookSearchById() {
     if (bookId < 0) {
-      window.alert("Check Book Id. Book Id should be greater than or equal 0!")
+      const config = {
+        description: 'Check Book ID! Book ID should be greater than or equal 0!',
+        duration: 4.5,
+        key: 'delete-update-search-book-id-search-error',
+        message: 'Check Book ID!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
@@ -65,9 +75,18 @@ export default function DeleteUpdateSearchBook() {
     setBookData(newContent);
   }
 
-  async function onBookSearchByName() {
+  async function handleBookSearchByName() {
     if (bookName === "" || bookName == null) {
-      window.alert("Check Book Name. Book name should be provided!")
+      const config = {
+        description: 'Check book name! Book name should be provided!',
+        duration: 4.5,
+        key: 'delete-update-search-book-name-search-error',
+        message: 'Check Book Name!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
@@ -89,7 +108,16 @@ export default function DeleteUpdateSearchBook() {
     const data = await _deleteBook({ bookId: key });
 
     if (!data.successful) { // Error
-      window.alert("Book is not Found")
+      const config = {
+        description: '',
+        duration: 4.5,
+        key: 'delete-update-search-book-delete-error',
+        message: 'Book is not found!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
@@ -108,7 +136,16 @@ export default function DeleteUpdateSearchBook() {
     })
 
     if (!data.successful) { // Unsuccessful request
-      window.alert("Error in update book");
+      const config = {
+        description: 'An error occured! Check form data and try again!',
+        duration: 4.5,
+        key: 'delete-update-search-book-update-error',
+        message: 'Check the form!',
+        placement: 'top'
+      }
+
+      notification.error(config);
+
       return;
     }
 
@@ -125,7 +162,6 @@ export default function DeleteUpdateSearchBook() {
         }
       }
     })
-    // const bookIndex = bookData.findIndex((item) => item.key === key);
 
     setBookData(newBookData);
   }
@@ -137,7 +173,7 @@ export default function DeleteUpdateSearchBook() {
         <Row>
           <Col span={12}>
             <Form
-              onFinish={onBookSearchById}
+              onFinish={handleBookSearchById}
               onFinishFailed={() => console.log("Failed in Search Book By Id!")}
             >
               <Form.Item
@@ -149,7 +185,7 @@ export default function DeleteUpdateSearchBook() {
                   id="bookId"
                   name="bookId"
                   value={bookId}
-                  onChange={onBookIdChange}
+                  onChange={handleBookIdChange}
                 />
 
                 <Button type="primary" htmlType="submit">
@@ -160,7 +196,7 @@ export default function DeleteUpdateSearchBook() {
           </Col>
           <Col span={12}>
             <Form
-              onFinish={onBookSearchByName}
+              onFinish={handleBookSearchByName}
               onFinishFailed={() => console.log("Failed in Search Book By Name!")}
             >
               <Form.Item
@@ -171,7 +207,7 @@ export default function DeleteUpdateSearchBook() {
                   id="name"
                   name="name"
                   value={bookName}
-                  onChange={onBookNameChange}
+                  onChange={handleBookNameChange}
                 />
 
                 <Button type="primary" htmlType="submit">

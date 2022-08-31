@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { notification } from "antd";
 import "antd/dist/antd.css";
+import React, { useState } from "react";
 
-import BookForm from "./BookForm";
 import BookDescription from "./BookDescription";
+import BookForm from "./BookForm";
 
 import { _addBook } from "../../service/BookService";
 
@@ -19,7 +20,7 @@ export default function AddBook() {
   });
 
   /* ========== Event Listener Functions ========== */
-  function onBookDataChange(event) {
+  function handleBookDataChange(event) {
     const { name, value } = event.target;
 
     setBookData((prevBookData) => ({
@@ -28,27 +29,37 @@ export default function AddBook() {
     }));
   }
 
-  async function onBookFormFinish() {
-    const data = await _addBook(bookData);
+  async function handleBookFormFinish() {
+    const response = await _addBook(bookData);
 
-    if (data.successful) {
+    if (response.successful) {
       setIsSuccessful(true);
     } else {
       setIsSuccessful(false);
     }
   }
 
-  function onBookFormFail() {
-    window.alert("Please, fill the all necessary fields!")
+  function handleBookFormFail() {
+    const config = {
+      description: '',
+      duration: 4.5,
+      key: 'add-book-form-error',
+      message: 'Please, fill the all necessary fields!',
+      placement: 'top'
+    }
+
+    notification.error(config);
+    setIsSuccessful(false);
+    return;
   }
 
   return (
     <div>
       <BookForm
         bookData={bookData}
-        onBookDataChange={onBookDataChange}
-        onBookFormFinish={onBookFormFinish}
-        onBookFormFail={onBookFormFail}
+        handleBookDataChange={handleBookDataChange}
+        handleBookFormFinish={handleBookFormFinish}
+        onBookFormFail={handleBookFormFail}
       />
 
       {
