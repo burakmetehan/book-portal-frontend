@@ -1,34 +1,48 @@
 import React, { useState } from "react";
-import { Table, Collapse, Button, Space, Form, Input, Popconfirm } from "antd";
+import { Table, Collapse, Button, Space, Form, Input, Popconfirm, notification } from "antd";
+
+import { BOOK_COLUMNS } from "../../../globals/GlobalVariables";
 
 const { Panel } = Collapse;
 
-export default function UserCollapse({ user, handleDelete, handleUpdate }) {
-
+export default function UserCollapseUpdate({ user, handleUpdate }) {
   const [isUpdateUser, setIsUpdateUser] = useState(false);
 
-  function onUserUpdateFormFinish({ password }) {
+  function handleUserUpdateFormFinish({ password }) {
     handleUpdate(user.id, password);
     setIsUpdateUser(false);
-    window.alert("User is updated");
   };
+
+  function handleUserUpdateFormFinishFailed() {
+    const config = {
+      description: 'User could not be updated! Try again!',
+      duration: 4.5,
+      key: 'search-user-by-username-not-found-error',
+      message: 'Update is not successful! ',
+      placement: 'top'
+    }
+
+    notification.error(config);
+
+    setIsUpdateUser(false);
+  }
 
   return (
     <Collapse>
-      <Panel header={`${user.username}`} key={user.key}>
+      <Panel header={`${user.username}`} key={user.id}>
         <p>This is the data of {user.username}.</p>
         <Collapse ghost>
           <Panel header="Read List" key="readList">
             <Table
               bordered
-              columns={bookColumns}
+              columns={BOOK_COLUMNS}
               dataSource={user.readList}
             />
           </Panel>
           <Panel header="Favorite List" key="favoriteList">
             <Table
               bordered
-              columns={bookColumns}
+              columns={BOOK_COLUMNS}
               dataSource={user.favoriteList}
             />
           </Panel>
@@ -46,62 +60,26 @@ export default function UserCollapse({ user, handleDelete, handleUpdate }) {
           </Panel>
         </Collapse>
 
-        <Space>
-          <Popconfirm
-            title="Are you sure to delete the user?"
-            onConfirm={() => handleDelete(user.key)}
-          >
-            <Button
-              type="primary"
-              htmlType="submit"
-            >
-              Delete User
-            </Button>
-          </Popconfirm>
+        <Button
+          type="primary"
+          htmlType="submit"
+          onClick={() => setIsUpdateUser(!isUpdateUser)}
+        >
+          {isUpdateUser ? 'Close' : 'Update User'}
+        </Button>
 
-          <Button
-            type="primary"
-            htmlType="submit"
-            onClick={() => setIsUpdateUser(!isUpdateUser)}
-          >
-            {isUpdateUser ? 'Close' : 'Update User'}
-          </Button>
-        </Space>
-
-        {isUpdateUser && <UserUpdateForm onFinish={onUserUpdateFormFinish} />}
+        {isUpdateUser &&
+          <UserUpdateForm
+            onFinish={handleUserUpdateFormFinish}
+            onFinishFailed={handleUserUpdateFormFinishFailed}
+          />
+        }
       </Panel>
     </Collapse>
   );
 }
 
-const bookColumns = [
-  {
-    title: 'Book Name',
-    dataIndex: 'name',
-  },
-  {
-    title: 'Author',
-    dataIndex: 'author',
-  },
-  {
-    title: 'Page Count',
-    dataIndex: 'pageCount',
-  },
-  {
-    title: 'Type',
-    dataIndex: 'type',
-  },
-  {
-    title: 'Publisher',
-    dataIndex: 'publisher',
-  },
-  {
-    title: 'Publication Date',
-    dataIndex: 'publicationDate',
-  }
-];
-
-function UserUpdateForm({ onFinish }) {
+function UserUpdateForm({ onFinish, onFinishFailed }) {
   const [form] = Form.useForm();
 
   return (
@@ -109,7 +87,7 @@ function UserUpdateForm({ onFinish }) {
       form={form}
       name="updateUser"
       onFinish={onFinish}
-      onFinishFailed={() => console.log("Fail")}
+      onFinishFailed={onFinishFailed}
     >
       <Form.Item
         name="password"

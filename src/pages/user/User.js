@@ -4,6 +4,7 @@ import { Layout, Radio, Breadcrumb } from "antd";
 
 import AddUser from "./AddUser";
 import DeleteUpdateSearchUser from "./DeleteUpdateSearchUser";
+import UpdateUser from "./update/UpdateUser"
 
 const { Content } = Layout;
 
@@ -15,7 +16,11 @@ const options = [
   {
     label: 'Update/Delete User',
     value: 'Update/Delete User'
-  }
+  },
+  {
+    label: 'Update User',
+    value: 'Update User'
+  },
 ];
 
 export default function User({ setHeaderKey }) {
@@ -53,6 +58,8 @@ function RenderSwitch({ option }) {
       return <AddUser />;
     case 'Update/Delete User':
       return <DeleteUpdateSearchUser />;
+    case 'Update User':
+      return <UpdateUser />
     default:
       return <h1>Error</h1>;
   }

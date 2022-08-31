@@ -1,17 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
+import { Button, Col, Form, Input, InputNumber, notification, Radio, Row } from "antd";
 import "antd/dist/antd.css";
-import { Form, Input, InputNumber, Button, Col, Row, notification, Radio } from "antd";
+import React, { useEffect, useRef, useState } from 'react';
 
+import { UserListParser } from './UserContentParser';
 import UserShow from './UserShow';
-import UserContentParser, { UserListParser } from './UserContentParser';
 
 import {
-  _deleteUser,
-  _searchAllUsers, _searchUserById, _searchUserByName,
-  _updateUser, _searchAllUsersList, _searchUserByIdList, _searchUserByUsernameList
+  _deleteUser, _searchAllUsersList, _searchUserByIdList, _searchUserByUsernameList, _updateUser
 } from '../../service/UserService';
 
-import PAGINATION from "../../global-vars/Pagination";
 
 const options = [
   {

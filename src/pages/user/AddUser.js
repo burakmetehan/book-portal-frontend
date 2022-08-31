@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import "antd/dist/antd.css";
 import { Form, Input, Button, notification } from "antd";
 
+import UserDescription from "./UserDescription";
+
 import { _addUser } from "../../service/UserService";
 
 export default function AddUser() {
@@ -9,14 +11,20 @@ export default function AddUser() {
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [userData, setUserData] = useState({
     username: "",
+    password: "",
+    id: 0,
+    roles: []
+  });
+  const [formData, setFormData] = useState({
+    username: "",
     password: ""
   });
 
   /* ========== Event Listener Functions ========== */
-  async function onFinish() {
+  async function handleFormFinish() {
     const response = await _addUser({
-      username: userData.username,
-      password: userData.password
+      username: formData.username,
+      password: formData.password
     });
 
     if (!response.successful) {
@@ -35,17 +43,30 @@ export default function AddUser() {
     }
 
     setIsSuccessful(true);
+    setUserData(response.data);
+    setFormData({ username: "", password: "" })
   }
 
-  function onFinishFailed() {
-    window.alert("Error in Add User")
+  function handleFormFinishFailed() {
+    const config = {
+      description: 'User could not be added! User may already be added or provided information is errornous!',
+      duration: 4.5,
+      key: 'add-user-finish-fail-error',
+      message: 'Check user information!',
+      placement: 'top'
+    }
+
+    notification.error(config);
+    setIsSuccessful(false);
+
+    return;
   }
 
-  function onUserDataChange(event) {
+  function handleUserDataChange(event) {
     const { name, value } = event.target;
 
-    setUserData((prevUserData) => ({
-      ...prevUserData,
+    setFormData((prevFormData) => ({
+      ...prevFormData,
       [name]: value
     }));
   }
@@ -54,8 +75,8 @@ export default function AddUser() {
   return (
     <div className="add-user">
       <Form
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
+        onFinish={handleFormFinish}
+        onFinishFailed={handleFormFinishFailed}
       >
         <Form.Item
           label="Username"
@@ -70,8 +91,8 @@ export default function AddUser() {
             id="username"
             name="username"
             placeholder="Username"
-            value={userData.username}
-            onChange={onUserDataChange}
+            value={formData.username}
+            onChange={handleUserDataChange}
           />
         </Form.Item>
 
@@ -88,8 +109,8 @@ export default function AddUser() {
             id="password"
             name="password"
             placeholder="Password"
-            value={userData.password}
-            onChange={onUserDataChange}
+            value={formData.password}
+            onChange={handleUserDataChange}
           />
         </Form.Item>
 
@@ -107,7 +128,7 @@ export default function AddUser() {
 
       {
         isSuccessful &&
-        <h1>{userData.username} is created</h1>
+        <UserDescription userData={userData} />
       }
     </div>
   );

@@ -1,38 +1,38 @@
-// User Content Parser for Paged Response
 
 /**
  * 
- * @param {Object} responseData data object of the response (response.data)
- * @returns content of the paged response data
+ * @param {Object} content Content of the paged response
+ * @returns parsed content list
  */
-export default function UserContentParser(responseData) {
-  const newContent = responseData.content.map((user) => {
+export function UserContentParser(content) {
+  const newContent = content.map((user, index) => {
 
-    const readList = user.readList.map((book) => {
+    const readList = user.readList.map((book, index) => {
       return {
         ...book,
-        key: book.id,
+        key: index,
         publicationDate: book.publicationDate.slice(0, 10)
       }
     });
 
-    const favoriteList = user.favoriteList.map((book) => {
+    const favoriteList = user.favoriteList.map((book, index) => {
       return {
         ...book,
-        key: book.id,
+        key: index,
         publicationDate: book.publicationDate.slice(0, 10)
       }
     });
 
-    const roles = user.roles.map((role) => {
+    const roles = user.roles.map((role, index) => {
       return {
         ...role,
-        key: role.id
+        key: index
       }
     });
 
     return ({
-      key: user.id,
+      id: user.id,
+      key: index,
       username: user.username,
       readList: readList,
       favoriteList: favoriteList,
@@ -43,37 +43,40 @@ export default function UserContentParser(responseData) {
   return newContent;
 }
 
-export function UserListParser({ responseData }) {
-  console.log("Hello from UserLsitParse")
-  console.log(responseData);
-  const newContent = responseData.map((user) => {
-
+/**
+ * 
+ * @param {Object} users list of users
+ * @returns new user list
+ */
+export function UserListParser(users) {
+  const newList = users.map((user, index) => {
     
-    const readList = user.readList.map((book) => {
+    const readList = user.readList.map((book, index) => {
       return {
         ...book,
-        key: book.id,
+        key: index,
         publicationDate: book.publicationDate.slice(0, 10)
       }
     });
 
-    const favoriteList = user.favoriteList.map((book) => {
+    const favoriteList = user.favoriteList.map((book, index) => {
       return {
         ...book,
-        key: book.id,
+        key: index,
         publicationDate: book.publicationDate.slice(0, 10)
       }
     });
 
-    const roles = user.roles.map((role) => {
+    const roles = user.roles.map((role, index) => {
       return {
         ...role,
-        key: role.id
+        key: index
       }
     });
 
     return ({
-      key: user.id,
+      id: user.id,
+      key: index,
       username: user.username,
       readList: readList,
       favoriteList: favoriteList,
@@ -81,5 +84,5 @@ export function UserListParser({ responseData }) {
     });
   });
 
-  return newContent;
+  return newList;
 }
