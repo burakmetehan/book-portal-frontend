@@ -109,21 +109,9 @@ export default function UpdateUser() {
     } else {
       searchAllUsers();
     }
-  }, [isSearch])
+  }, [isSearch]);
 
   /* ========== Event Listener Functions ========== */
-  function handleUserIdChange(newId) {
-    if (newId) {
-      setUserId(newId);
-    } else {
-      setUserId(0);
-    }
-  }
-
-  function handleUsernameChange(event) {
-    setUsername(event.target.value);
-  }
-
   function handleRadioValueChange(event) {
     setIsSearch(prev => prev + 1);
     setRadioValue(event.target.value);
@@ -166,7 +154,7 @@ export default function UpdateUser() {
 
       notification.error(config);
 
-      setUserId(null);
+      setUserId(0);
       setPagination(PAGINATION);
 
       return;
@@ -235,26 +223,25 @@ export default function UpdateUser() {
   async function handleUpdate(id, password) {
     const response = await _updateUser({ userId: id, newPassword: password })
 
-    console.log(response);
-
     if (!response.successful) { // Unsuccessful request
       const config = {
         description: 'User could not be updated! Try again!',
         duration: 4.5,
-        key: 'search-user-by-username-not-found-error',
+        key: 'handle-update-error',
         message: 'Update is not successful! ',
         placement: 'top'
       }
 
       notification.error(config);
 
-      setUserId(null);
+      setUserId(0);
       setUsername("");
       setPagination(PAGINATION);
 
       return;
     }
 
+    // Update is successful
     const config = {
       description: 'User is successfully updated!',
       duration: 4.5,
@@ -265,11 +252,9 @@ export default function UpdateUser() {
 
     notification.success(config);
 
-    // Update is successful
-
     const newUsers = UserListParser(response.data);
 
-    setUserId(null);
+    setUserId(0);
     setUsername("");
     setUsers(newUsers);
   }
