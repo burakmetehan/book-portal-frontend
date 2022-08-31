@@ -43,7 +43,7 @@ export default function BookCollapseUpdate({ book, handleUpdate }) {
     <Collapse>
       <Panel header={`${book.name}`} key={book.id}>
         <p>This is the data of {book.name}.</p>
-        
+
         <BookDescription bookData={book} />
 
         <Button

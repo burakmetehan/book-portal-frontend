@@ -3,7 +3,7 @@ import "antd/dist/antd.css";
 import React, { useState } from "react";
 
 import BookDescription from "../util/BookDescription";
-import BookForm from "../util/BookForm";
+import BookForm from "./BookForm";
 
 import { _addBook } from "../../../service/BookService";
 import { BookListParser } from "../util/BookContentParser";

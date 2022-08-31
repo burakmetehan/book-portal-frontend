@@ -65,7 +65,7 @@ function RenderSwitch({ option }) {
     case 'Add Book':
       return <AddBook />;
     case 'Update Book':
-      return <UpdateBook /> 
+      return <UpdateBook />
     case 'Delete Book':
       return <DeleteBook />;
     case 'Book List':
