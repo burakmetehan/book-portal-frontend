@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import "antd/dist/antd.css";
 import { Form, Input, Button, notification } from "antd";
 
-import UserDescription from "./UserDescription";
+import UserDescription from "../util/UserDescription";
 
-import { _addUser } from "../../service/UserService";
+import { _addUser } from "../../../service/UserService";
 
 export default function AddUser() {
-
   const [isSuccessful, setIsSuccessful] = useState(false);
   const [userData, setUserData] = useState({
     username: "",

@@ -1,8 +1,8 @@
 import { Layout, Radio } from "antd";
 import React, { useState } from "react";
 
-import AddUser from "./AddUser";
-import DeleteUser from "./DeleteUser";
+import AddUser from "./add/AddUser";
+import DeleteUser from "./delete/DeleteUser";
 import UpdateUser from "./update/UpdateUser";
 
 const { Content } = Layout;

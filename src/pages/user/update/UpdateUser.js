@@ -2,14 +2,14 @@ import { notification, Pagination } from "antd";
 import "antd/dist/antd.css";
 import React, { useEffect, useRef, useState } from "react";
 
-import { UserContentParser, UserListParser } from "../UserContentParser";
+import { UserContentParser, UserListParser } from "../util/UserContentParser";
+import UserSearch from "../util/UserSearch";
 import UserCollapseUpdate from "./UserCollapseUpdate";
 
 import { _searchAllUsers, _searchUserById, _searchUserByUsername, _updateUser } from "../../../service/UserService";
 
 import { PAGINATION } from "../../../globals/GlobalVariables";
 
-import UserSearch from "../UserSearch";
 
 export default function UpdateUser() {
   const [userId, setUserId] = useState(0);
@@ -113,6 +113,7 @@ export default function UpdateUser() {
 
   /* ========== Event Listener Functions ========== */
   function handleRadioValueChange(event) {
+    setPagination(PAGINATION);
     setIsSearch(prev => prev + 1);
     setRadioValue(event.target.value);
   };
@@ -176,10 +177,10 @@ export default function UpdateUser() {
   async function handleUserSearchByUsername() {
     if (username == null || username === "") {
       const config = {
-        description: 'Check Username!',
+        description: 'Username should be provided!',
+        message: 'Check Username!',
         duration: 4.5,
         key: 'search-user-by-username-error',
-        message: 'Username should be provided!',
         placement: 'top'
       }
 

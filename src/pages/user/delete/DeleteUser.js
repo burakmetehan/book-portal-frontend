@@ -1,30 +1,17 @@
-import { Button, Col, Form, Input, InputNumber, notification, Radio, Row } from "antd";
+import { notification, Pagination } from "antd";
 import "antd/dist/antd.css";
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from "react";
 
-import { UserListParser } from './UserContentParser';
-import UserShow from './UserShowDelete';
-import UserCollapseDelete from "./UserCollapseDelete"
+import { UserContentParser, UserListParser } from "../util/UserContentParser";
+import UserSearch from "../util/UserSearch";
+import UserCollapseDelete from "./UserCollapseDelete";
 
 import {
-  _deleteUser, _searchAllUsersList, _searchUserByIdList, _searchUserByUsernameList, _updateUser
-} from '../../service/UserService';
+  _deleteUser, _searchAllUsers, _searchUserById, _searchUserByUsername
+} from "../../../service/UserService";
 
-import UserSearch from "./UserSearch";
 
-import { PAGINATION } from "../../globals/GlobalVariables";
-
-const options = [
-  {
-    label: 'Search User By ID',
-    value: 'Search User By ID'
-  },
-  {
-    label: 'Search User By Username',
-    value: 'Search User By Username'
-  }
-];
-
+import { PAGINATION } from "../../../globals/GlobalVariables";
 
 export default function DeleteUpdateSearchUser() {
   const [userId, setUserId] = useState(0);
@@ -41,7 +28,6 @@ export default function DeleteUpdateSearchUser() {
   // isSearch makes use of the fact that '0: false, others: true'
   const [isSearch, setIsSearch] = useState(0);
 
-  const isFirstRender = useRef(true);
   const notRenderPaginationEffect = useRef(true);
 
   /* ========== Use Effect Functions ========== */
@@ -292,14 +278,18 @@ export default function DeleteUpdateSearchUser() {
       <div className='user-show'>
         <h1>Users</h1>
         {users.map((user) => {
-          return (<UserCollapseDelete user={user} handleUpdate={handleUpdate} />)
+          return (<UserCollapseDelete user={user} handleDelete={handleDelete} />)
         })}
-        <UserShow
-          users={state.userData}
-          handleDelete={handleDelete}
-          handleUpdate={handleUpdate}
-        />
       </div>
+
+      <Pagination
+        current={pagination.current}
+        pageSize={pagination.pageSize}
+        showSizeChanger={true}
+        total={pagination.total}
+        pageSizeOptions={pagination.pageSizeOptions}
+        onChange={handlePaginationChange}
+      />
     </>
   );
 }
