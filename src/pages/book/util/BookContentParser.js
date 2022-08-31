@@ -1,5 +1,10 @@
-export function BookListParser(response) {
-  const newList = response.map((book, index) => {
+/**
+ * 
+ * @param {Object} books list of books
+ * @returns new book list
+ */
+export function BookListParser(books) {
+  const newList = books.map((book, index) => {
     return ({
       ...book,
       key: index,
@@ -10,8 +15,13 @@ export function BookListParser(response) {
   return newList;
 }
 
-export function BookContentParser(response) {
-  const newContent = response.content.map((book, index) => {
+/**
+ * 
+ * @param {Object} content Content of the paged response
+ * @returns parsed content list
+ */
+export function BookContentParser(content) {
+  const newContent = content.map((book, index) => {
     return ({
       ...book,
       key: index,

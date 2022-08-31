@@ -2,17 +2,17 @@ import { Button, Col, Form, Input, InputNumber, notification, Radio, Row, Space,
 import "antd/dist/antd.css";
 import React, { useEffect, useRef, useState } from "react";
 
-import { BOOK_COLUMNS, PAGINATION } from "../../globals/GlobalVariables";
-import { BookContentParserWithUserListInfo } from "./BookContentParser";
+import { BOOK_COLUMNS, PAGINATION } from "../../../globals/GlobalVariables";
+import { BookContentParserWithUserListInfo } from "../util/BookContentParser";
 
 import {
   _addFavoriteList,
   _addReadList,
   _removeFavoriteList,
   _removeReadList
-} from "../../service/BookListService";
-import { _searchAllBook, _searchBookById, _searchBookByName } from "../../service/BookService";
-import { _searchUserByUsernameList } from "../../service/UserService";
+} from "../../../service/BookListService";
+import { _searchAllBooks, _searchBookById, _searchBooksByName } from "../../../service/BookService";
+import { _searchUserByUsernameList } from "../../../service/UserService";
 
 const options = [
   {
@@ -121,7 +121,7 @@ export default function BookList() {
     async function searchAllBook() {
       setLoading(true);
 
-      const response = await _searchAllBook(pagination); // searching books by pagination
+      const response = await _searchAllBooks(pagination); // searching books by pagination
 
       if (!response.successful) { // Not successful
         const config = {
@@ -163,7 +163,7 @@ export default function BookList() {
     async function searchAllBook() {
       setLoading(true);
 
-      const response = await _searchAllBook(pagination);
+      const response = await _searchAllBooks(pagination);
 
       if (!response.successful) { // Not successful
         return;
@@ -366,7 +366,7 @@ export default function BookList() {
       return;
     }
 
-    const response = await _searchBookByName({ bookName });
+    const response = await _searchBooksByName({ bookName });
 
     if (!response.successful) {
       setBookData([]);
