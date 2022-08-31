@@ -8,7 +8,7 @@ export function _addUser({ username, password }) {
 
   var config = {
     method: 'post',
-    url: 'http://localhost:8080/users/',
+    url: process.env.REACT_APP_USERS_URL,
     headers: {},
     data: data
   };
@@ -33,7 +33,7 @@ export function _deleteUser({ userId }) {
 
   var config = {
     method: 'delete',
-    url: `http://localhost:8080/users/${userId}`,
+    url: `${process.env.REACT_APP_USERS_URL}/${userId}`,
     headers: {}
   };
 
@@ -57,7 +57,7 @@ export function _searchAllUsers(pagination) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users`,
+    url: process.env.REACT_APP_USERS_URL,
     headers: {},
     params: {
       pageNumber: pagination.pageNumber,
@@ -85,7 +85,7 @@ export function _searchAllUsersList() {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/no-page`,
+    url: process.env.REACT_APP_USERS_URL_NO_PAGE,
     headers: {}
   };
 
@@ -109,7 +109,7 @@ export function _searchUserById({ userId }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/${userId}`,
+    url: `${process.env.REACT_APP_USERS_URL}/${userId}`,
     headers: {}
   };
 
@@ -133,7 +133,7 @@ export function _searchUserByIdList({ userId }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/no-page/${userId}`,
+    url: `${process.env.REACT_APP_USERS_URL_NO_PAGE}/${userId}`,
     headers: {}
   };
 
@@ -157,7 +157,7 @@ export function _searchUserByUsername({ username, pagination }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/username`,
+    url: `${process.env.REACT_APP_USERS_URL}/username`,
     headers: {},
     params: {
       username: username,
@@ -186,7 +186,7 @@ export function _searchUserByUsernameList({ username }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/users/no-page/username`,
+    url: `${process.env.REACT_APP_USERS_URL_NO_PAGE}/username`,
     headers: {},
     params: {
       username: username
@@ -216,7 +216,7 @@ export function _updateUser({ userId, newPassword }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/users/${userId}`,
+    url: `${process.env.REACT_APP_USERS_URL}/${userId}`,
     headers: {},
     data: data
   };
@@ -233,6 +233,4 @@ export function _updateUser({ userId, newPassword }) {
         successful: false 
       };
     });
-
-
 }

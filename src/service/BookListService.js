@@ -4,7 +4,7 @@ export function _addFavoriteList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/fav`,
+    url: process.env.REACT_APP_FAV_URL,
     headers: {},
     params: {
       userId: userId,
@@ -20,7 +20,7 @@ export function _addFavoriteList({ userId, bookId }) {
         ...response.data
       }
     })
-    .catch(function (error) {
+    .catch(function () {
       return {
         successful: false
       }
@@ -33,7 +33,7 @@ export function _addReadList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/read`,
+    url: process.env.REACT_APP_READ_URL,
     headers: {},
     params: {
       userId: userId,
@@ -49,7 +49,7 @@ export function _addReadList({ userId, bookId }) {
         ...response.data
       }
     })
-    .catch(function (error) {
+    .catch(function () {
       return {
         successful: false
       }
@@ -63,7 +63,7 @@ export function _removeFavoriteList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/fav`,
+    url: process.env.REACT_APP_FAV_URL,
     headers: {},
     params: {
       userId: userId,
@@ -79,7 +79,7 @@ export function _removeFavoriteList({ userId, bookId }) {
         ...response.data
       }
     })
-    .catch(function (error) {
+    .catch(function () {
       return {
         successful: false
       }
@@ -92,7 +92,7 @@ export function _removeReadList({ userId, bookId }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/read`,
+    url: process.env.REACT_APP_READ_URL,
     headers: {},
     params: {
       userId: userId,
@@ -108,7 +108,7 @@ export function _removeReadList({ userId, bookId }) {
         ...response.data
       }
     })
-    .catch(function (error) {
+    .catch(function () {
       return {
         successful: false
       }

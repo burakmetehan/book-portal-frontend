@@ -19,7 +19,7 @@ export function _addBook({
 
   var config = {
     method: 'post',
-    url: `http://localhost:8080/books`,
+    url: process.env.REACT_APP_BOOKS_URL,
     headers: {},
     data: data
   };
@@ -43,7 +43,7 @@ export function _deleteBook({ bookId }) {
   var axios = require('axios');
   var config = {
     method: 'delete',
-    url: `http://localhost:8080/books/${bookId}`,
+    url: `${process.env.REACT_APP_BOOKS_URL}/${bookId}`,
     headers: {}
   };
 
@@ -67,7 +67,7 @@ export function _searchAllBooks(pagination) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books`,
+    url: process.env.REACT_APP_BOOKS_URL,
     headers: {},
     params:{
       pageNumber: pagination.pageNumber,
@@ -95,7 +95,7 @@ export function _searchAllBooksList() {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/no-page`,
+    url: process.env.REACT_APP_BOOKS_URL_NO_PAGE,
     headers: {}
   };
 
@@ -119,7 +119,7 @@ export function _searchBookById({ bookId }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/${bookId}`,
+    url: `${process.env.REACT_APP_BOOKS_URL}/${bookId}`,
     headers: {}
   };
 
@@ -143,7 +143,7 @@ export function _searchBookByIdList({ bookId }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/no-page/${bookId}`,
+    url: `${process.env.REACT_APP_BOOKS_URL_NO_PAGE}/${bookId}`,
     headers: {}
   };
 
@@ -167,9 +167,10 @@ export function _searchBooksByName({ bookName, pagination }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/name?bookName=${bookName}`,
+    url: `${process.env.REACT_APP_BOOKS_URL}/name`,
     headers: {},
     params: {
+      bookName: bookName,
       pageNumber: pagination.pageNumber,
       pageSize: pagination.pageSize
     }
@@ -195,7 +196,7 @@ export function _searchBooksByNameList({ bookName }) {
 
   var config = {
     method: 'get',
-    url: `http://localhost:8080/books/no-page/name`,
+    url: `${process.env.REACT_APP_BOOKS_URL_NO_PAGE}/name`,
     headers: {},
     params: {
       bookName: bookName
@@ -227,7 +228,7 @@ export function _updateBook({ bookId, pageCount, publisher, publicationDate }) {
 
   var config = {
     method: 'put',
-    url: `http://localhost:8080/books/${bookId}`,
+    url: `${process.env.REACT_APP_BOOKS_URL}/${bookId}`,
     headers: {},
     data: data
   };

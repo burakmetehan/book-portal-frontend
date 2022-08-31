@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 export function _checkAuth() {
 
   var axios = require('axios');
@@ -14,7 +12,7 @@ export function _checkAuth() {
 
   var config = {
     method: 'post',
-    url: 'http://localhost:8080/auth',
+    url: process.env.REACT_APP_AUTH_URL,
     headers: {},
     data: data
   };
@@ -44,7 +42,7 @@ export function _login({ username, password }) {
 
   var config = {
     method: 'post',
-    url: 'http://localhost:8080/auth/login',
+    url: process.env.REACT_APP_LOGIN_URL,
     headers: {},
     data: data
   };
