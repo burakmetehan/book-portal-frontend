@@ -44,7 +44,29 @@ function HomeContent({ setIsAuthenticated }) {
         return;
       }
 
-      setUserData(response.data && response.data[0]);
+      let user = response.data && response.data[0];
+      
+      const readList = user.readList.map((book) => {
+        return {
+          ...book,
+          publicationDate: book.publicationDate.slice(0, 10)
+        }
+      });
+
+      const favoriteList = user.favoriteList.map((book) => {
+        return {
+          ...book,
+          publicationDate: book.publicationDate.slice(0, 10)
+        }
+      });
+
+      user = {
+        ...user,
+        readList: readList,
+        favoriteList: favoriteList
+      }
+
+      setUserData(user);
     }
 
     getUserData();
@@ -75,8 +97,6 @@ function HomeContent({ setIsAuthenticated }) {
 
       notification.success(config);
     }
-
-    setUserData(response.data);
 
     localStorage.clear();
     sessionStorage.clear();
@@ -148,9 +168,7 @@ function HomeContent({ setIsAuthenticated }) {
           isChangePassword && <UserUpdateForm onUserUpdateFormFinish={onUserUpdateFormFinish} />
         }
       </Card>
-
     );
-
   }
 
   return (
