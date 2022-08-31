@@ -41,7 +41,7 @@ export function _deleteUser({ userId }) {
     .then(function (response) {
       return { 
         successful: true, 
-        ...response.data 
+        data: [response.data]
       };
     })
     .catch(function () {
@@ -228,7 +228,7 @@ export function _updateUser({ userId, newPassword }) {
         data: [response.data] 
       };
     })
-    .catch(function (res) {
+    .catch(function () {
       return { 
         successful: false 
       };
