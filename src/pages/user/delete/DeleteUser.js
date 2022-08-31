@@ -13,10 +13,11 @@ import {
 
 import { PAGINATION } from "../../../globals/GlobalVariables";
 
-export default function DeleteUpdateSearchUser() {
+export default function DeleteUser() {
   const [userId, setUserId] = useState(0);
   const [username, setUsername] = useState("");
   const [users, setUsers] = useState([{
+    id: 0,
     key: 0,
     username: "",
     readList: null,
@@ -49,11 +50,11 @@ export default function DeleteUpdateSearchUser() {
         return;
       }
 
-      const newContent = UserContentParser(response.content);
+      const newUsers = UserContentParser(response.content);
       const { pageNumber, pageSize } = response.pageable;
 
       // setting states with new users
-      setUsers(newContent);
+      setUsers(newUsers);
       setPagination({
         ...pagination,
         current: pageNumber + 1,
@@ -84,10 +85,10 @@ export default function DeleteUpdateSearchUser() {
         return;
       }
 
-      const newContent = UserContentParser(response.content);
+      const newUsers = UserContentParser(response.content);
 
       // setting states with new users
-      setUsers(newContent);
+      setUsers(newUsers);
       setPagination({
         ...pagination,
         total: response.totalElements
@@ -115,6 +116,7 @@ export default function DeleteUpdateSearchUser() {
 
   /* ========== Event Listener Functions ========== */
   function handleRadioValueChange(event) {
+    setPagination(PAGINATION);
     setIsSearch(prev => prev + 1);
     setRadioValue(event.target.value);
   };
@@ -130,12 +132,12 @@ export default function DeleteUpdateSearchUser() {
   }
 
   async function handleUserSearchById() {
-    if (userId < 0) {
+    if (userId <= 0) {
       const config = {
         description: 'Check User ID!',
         duration: 4.5,
         key: 'search-user-by-id-error',
-        message: 'User ID should be 0 or greater than 0!',
+        message: 'User ID should be greater than 0!',
         placement: 'top'
       }
 
@@ -150,7 +152,7 @@ export default function DeleteUpdateSearchUser() {
         description: 'User is not found!',
         duration: 4.5,
         key: 'search-user-by-id-not-found-error',
-        message: 'User could not be found! Check username and try again!',
+        message: 'User could not be found! Check user id and try again!',
         placement: 'top'
       }
 

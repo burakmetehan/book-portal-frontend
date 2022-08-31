@@ -28,7 +28,7 @@ export function _addBook({
     .then(function (response) {
       return {
         successful: true,
-        ...response.data
+        data: [response.data]
       };
     })
     .catch(function () {
@@ -51,7 +51,7 @@ export function _deleteBook({ bookId }) {
     .then(function (response) {
       return {
         successful: true,
-        ...response.data
+        data: [response.data]
       };
     })
     .catch(function () {
@@ -61,7 +61,7 @@ export function _deleteBook({ bookId }) {
     });
 }
 
-export function _searchAllBook(pagination) {
+export function _searchAllBooks(pagination) {
 
   var axios = require('axios');
 
@@ -69,28 +69,27 @@ export function _searchAllBook(pagination) {
     method: 'get',
     url: `http://localhost:8080/books`,
     headers: {},
-    param:{
+    params:{
       pageNumber: pagination.pageNumber,
       pageSize: pagination.pageSize
     }
   };
 
   return axios(config)
-    .then(function (response) {
+  .then(function (response) {
       return {
         successful: true,
         ...response.data
       };
     })
     .catch(function () {
-      console.error("Error in search all book!")
       return {
         successful: false
       };
     });
 }
 
-export function _searchAllBookList() {
+export function _searchAllBooksList() {
 
   var axios = require('axios');
 
@@ -162,7 +161,7 @@ export function _searchBookByIdList({ bookId }) {
     });
 }
 
-export function _searchBookByName({ bookName, pageNumber, pageSize }) {
+export function _searchBooksByName({ bookName, pagination }) {
 
   var axios = require('axios');
 
@@ -171,8 +170,8 @@ export function _searchBookByName({ bookName, pageNumber, pageSize }) {
     url: `http://localhost:8080/books/name?bookName=${bookName}`,
     headers: {},
     params: {
-      pageNumber: pageNumber,
-      pageSize: pageSize
+      pageNumber: pagination.pageNumber,
+      pageSize: pagination.pageSize
     }
   };
 
@@ -190,7 +189,7 @@ export function _searchBookByName({ bookName, pageNumber, pageSize }) {
     });
 }
 
-export function _searchBookByNameList({ bookName }) {
+export function _searchBooksByNameList({ bookName }) {
 
   var axios = require('axios');
 
@@ -237,7 +236,7 @@ export function _updateBook({ bookId, pageCount, publisher, publicationDate }) {
     .then(function (response) {
       return {
         successful: true,
-        ...response.data
+        data: [response.data]
       };
     })
     .catch(function () {

@@ -31,9 +31,8 @@ export function UserContentParser(content) {
     });
 
     return ({
-      id: user.id,
+      ...user,
       key: index,
-      username: user.username,
       readList: readList,
       favoriteList: favoriteList,
       roles: roles
@@ -75,9 +74,8 @@ export function UserListParser(users) {
     });
 
     return ({
-      id: user.id,
+      ...user,
       key: index,
-      username: user.username,
       readList: readList,
       favoriteList: favoriteList,
       roles: roles

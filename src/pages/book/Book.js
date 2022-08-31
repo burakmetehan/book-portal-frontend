@@ -2,9 +2,10 @@ import React, { useState } from "react";
 
 import { Layout, Radio } from "antd";
 
-import AddBook from "./AddBook";
-import BookList from "./BookList";
-import DeleteUpdateSearchBook from "./DeleteUpdateSearchBook";
+import AddBook from "./add/AddBook";
+import DeleteBook from "./delete/DeleteBook";
+import BookList from "./list/BookList";
+import UpdateBook from "./update/UpdateBook";
 
 const { Content } = Layout;
 
@@ -18,8 +19,12 @@ export default function Book({ setHeaderKey, admin }) {
       value: 'Add Book'
     },
     {
-      label: 'Update/Delete Book',
-      value: 'Update/Delete Book'
+      label: 'Delete Book',
+      value: 'Delete Book'
+    },
+    {
+      label: 'Update Book',
+      value: 'Update Book'
     },
     {
       label: 'Book List',
@@ -59,8 +64,10 @@ function RenderSwitch({ option }) {
   switch (option) {
     case 'Add Book':
       return <AddBook />;
-    case 'Update/Delete Book':
-      return <DeleteUpdateSearchBook />;
+    case 'Update Book':
+      return <UpdateBook /> 
+    case 'Delete Book':
+      return <DeleteBook />;
     case 'Book List':
       return <BookList />
     default:

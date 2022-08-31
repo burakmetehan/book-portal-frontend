@@ -15,6 +15,7 @@ export default function UpdateUser() {
   const [userId, setUserId] = useState(0);
   const [username, setUsername] = useState("");
   const [users, setUsers] = useState([{
+    id: 0,
     key: 0,
     username: "",
     readList: null,
@@ -129,12 +130,12 @@ export default function UpdateUser() {
   }
 
   async function handleUserSearchById() {
-    if (userId < 0) {
+    if (userId <= 0) {
       const config = {
         description: 'Check User ID!',
         duration: 4.5,
         key: 'search-user-by-id-error',
-        message: 'User ID should be 0 or greater than 0!',
+        message: 'User ID should be greater than 0!',
         placement: 'top'
       }
 
