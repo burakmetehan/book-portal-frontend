@@ -1,4 +1,3 @@
-
 /**
  * 
  * @param {Object} content Content of the paged response

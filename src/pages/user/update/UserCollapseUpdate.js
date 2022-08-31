@@ -1,5 +1,7 @@
-import { Button, Collapse, Form, Input, notification, Table } from "antd";
 import React, { useState } from "react";
+
+import { Button, Collapse, Form, Input, notification, Table } from "antd";
+import "antd/dist/antd.css";
 
 import { BOOK_COLUMNS } from "../../../globals/GlobalVariables";
 

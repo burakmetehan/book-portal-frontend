@@ -5,6 +5,7 @@ import {
   Alert, Avatar, Button, Card, Collapse,
   Descriptions, Form, Input, Layout, notification, Table
 } from 'antd';
+import "antd/dist/antd.css";
 
 import { _searchUserByUsernameList, _updateUser } from "../service/UserService";
 

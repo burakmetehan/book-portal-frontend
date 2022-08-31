@@ -1,5 +1,7 @@
-import { Button, Collapse, Popconfirm, Table } from "antd";
 import React from "react";
+
+import { Button, Collapse, Popconfirm, Table } from "antd";
+import "antd/dist/antd.css";
 
 import { BOOK_COLUMNS } from "../../../globals/GlobalVariables";
 

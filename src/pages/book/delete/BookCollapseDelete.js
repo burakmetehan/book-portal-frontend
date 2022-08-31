@@ -1,5 +1,7 @@
-import { Button, Collapse, Popconfirm } from "antd";
 import React from "react";
+
+import { Button, Collapse, Popconfirm } from "antd";
+import "antd/dist/antd.css";
 
 import BookDescription from "../util/BookDescription";
 

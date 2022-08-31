@@ -1,6 +1,7 @@
+import React from "react";
+
 import { Descriptions } from "antd";
 import "antd/dist/antd.css";
-import React from "react";
 
 export default function BookDescription({ bookData }) {
   return (

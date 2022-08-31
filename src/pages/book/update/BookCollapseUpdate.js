@@ -1,5 +1,7 @@
-import { Button, Collapse, Form, Input, InputNumber, notification } from "antd";
 import React, { useState } from "react";
+
+import { Button, Collapse, Form, Input, InputNumber, notification } from "antd";
+import "antd/dist/antd.css";
 
 import BookDescription from "../util/BookDescription";
 

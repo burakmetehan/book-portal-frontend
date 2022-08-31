@@ -1,5 +1,7 @@
-import { Layout, Radio } from "antd";
 import React, { useState } from "react";
+
+import { Layout, Radio } from "antd";
+import "antd/dist/antd.css";
 
 import AddUser from "./add/AddUser";
 import DeleteUser from "./delete/DeleteUser";
