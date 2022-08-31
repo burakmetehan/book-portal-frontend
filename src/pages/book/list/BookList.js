@@ -1,9 +1,10 @@
-import { Button, Col, Form, Input, InputNumber, notification, Radio, Row, Space, Table } from 'antd';
+import { Button, notification, Space, Table } from 'antd';
 import "antd/dist/antd.css";
 import React, { useEffect, useRef, useState } from "react";
 
 import { BOOK_COLUMNS, PAGINATION } from "../../../globals/GlobalVariables";
 import { BookContentParserWithUserListInfo } from "../util/BookContentParser";
+import BookSearch from "../util/BookSearch";
 
 import {
   _addFavoriteList,
@@ -20,8 +21,8 @@ const options = [
     value: 'Search Book By ID'
   },
   {
-    label: 'Search Book By Book Name',
-    value: 'Search Book By Book Name'
+    label: 'Search Book By Name',
+    value: 'Search Book By Name'
   }
 ];
 
@@ -63,7 +64,7 @@ export default function BookList() {
   const [favoriteBooks, setFavoriteBooks] = useState([]);
   const [isSearchAll, setIsSearchAll] = useState(true);
 
-  const [bookData, setBookData] = useState([{
+  const [books, setBooks] = useState([{
     key: 0,
     name: "",
     author: "",
@@ -76,11 +77,13 @@ export default function BookList() {
   }]);
 
   const [loading, setLoading] = useState(false);
-  const [pagination, setPagination] = useState(PAGINATION)
+  const [pagination, setPagination] = useState(PAGINATION);
+
+  const [isSearch, setIsSearch] = useState(0);
 
   /* ========== Refs ========== */
   const isFirstRenderUserId = useRef(true); // Variable to block run in first render
-  const isFirstRenderPagination = useRef(true);
+  const isFirstRender = useRef(true); // Block first run of useEffect 
 
   /* ========== Use Effect Functions ========== */
   // In the beginning, getting user data from database
@@ -93,13 +96,13 @@ export default function BookList() {
 
       if (!response.successful) { // Not successful
         const config = {
+          message: 'User is not found!',
           description: 'An error occurred while searching user! Try Logging out and Logging in again!',
           duration: 4.5,
           key: 'book-list-search-user-error',
-          message: 'User is not found!',
           placement: 'top'
         }
-  
+
         notification.error(config);
         return;
       }
@@ -121,17 +124,17 @@ export default function BookList() {
     async function searchAllBook() {
       setLoading(true);
 
-      const response = await _searchAllBooks(pagination); // searching books by pagination
+      const response = await _searchAllBooks(PAGINATION); // searching books by pagination
 
       if (!response.successful) { // Not successful
         const config = {
+          message: 'Books are not found!',
           description: 'An error occurred while searching books! Try again!',
           duration: 4.5,
           key: 'book-list-search-all-book-error',
-          message: 'Books are not found!',
           placement: 'top'
         }
-  
+
         notification.error(config);
         return;
       }
@@ -142,9 +145,9 @@ export default function BookList() {
         total: response.totalElements
       })
 
-      const newContent = BookContentParserWithUserListInfo(response, favoriteBooks, readBooks);
+      const newContent = BookContentParserWithUserListInfo(response.content, favoriteBooks, readBooks);
 
-      setBookData(newContent);
+      setBooks(newContent);
 
       setLoading(false);
     }
@@ -156,54 +159,102 @@ export default function BookList() {
     }
 
     searchAllBook();
-  }, [userId])
+  }, [userId]);
 
-  // According to change in pagination, load book
+  // useEffect when bookId or bookName is reset
   useEffect(() => {
     async function searchAllBook() {
       setLoading(true);
 
-      const response = await _searchAllBooks(pagination);
+      const response = await _searchAllBooks(PAGINATION);
 
       if (!response.successful) { // Not successful
+        const config = {
+          message: 'Books are not found!',
+          description: 'An error occurred while searching books! Try again!',
+          duration: 4.5,
+          key: 'book-list-search-all-book-error',
+          placement: 'top'
+        }
+
+        notification.error(config);
         return;
       }
 
-      const newContent = BookContentParserWithUserListInfo(response, favoriteBooks, readBooks);
+      const newBooks = BookContentParserWithUserListInfo(response.content, favoriteBooks, readBooks);
+      const { pageNumber, pageSize } = response.pageable;
 
-      setIsSearchAll(false); // Block infinite loop search because of the pagination state change below
-      setBookData(newContent);
+      // setting states with new books
+      setBooks(newBooks);
       setPagination({
         ...pagination,
+        current: pageNumber + 1,
+        pageNumber: pageNumber,
+        pageSize: pageSize,
         total: response.totalElements
-      })
+      });
 
       setLoading(false);
     }
 
-    if (isFirstRenderPagination.current) {
-      isFirstRenderPagination.current = false;
-      return;
-    }
-
-    if (!isSearchAll) {
-      setIsSearchAll(true);
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
       return;
     }
 
     searchAllBook();
-  }, [pagination]);
+  }, [bookId !== 0, bookName !== ""]);
 
-  // useEffect when bookId or bookName is reset
   useEffect(() => {
-    setIsSearchAll(true);
-    setPagination({
-      ...PAGINATION
-    });
-  }, [bookId == null, bookName === ""]);
+    async function searchAllBooks() {
+      const response = await _searchAllBooks(pagination); // searching books
+
+      if (!response.successful) { // Not successful
+        const config = {
+          message: 'Book could not be loaded!',
+          description: 'An error happened while trying to load books! Please try later!',
+          duration: 4.5,
+          key: 'search-all-book-error',
+          placement: 'top'
+        }
+
+        notification.error(config);
+
+        return;
+      }
+
+      const newBooks = BookContentParserWithUserListInfo(response.content, favoriteBooks, readBooks);
+
+      // setting states with new books
+      setBooks(newBooks);
+      setPagination({
+        ...pagination,
+        total: response.totalElements
+      });
+      setIsSearch(0); // Restart the isSearch for possible overflow
+    }
+
+    if (!isSearch) {
+      return;
+    }
+
+    if (radioValue === "Search Book By ID" && bookId !== 0) {
+      handleBookSearchById();
+    } else if (radioValue === "Search Book By Name" && bookName) {
+      handleBookSearchByName();
+    } else {
+      searchAllBooks();
+    }
+  }, [isSearch]);
 
 
   /* ========== Handle Functions ========== */
+  function handleRadioValueChange(event) {
+    setRadioValue(event.target.value);
+    setPagination(PAGINATION);
+    setIsSearch(prev => prev + 1);
+  }
+
   function handleTableChange(newPagination) {
     setPagination({
       ...pagination,
@@ -211,44 +262,20 @@ export default function BookList() {
       pageSize: newPagination.pageSize,
       pageNumber: newPagination.current - 1
     });
+    setIsSearch(prev => prev + 1);
   }
-
-  function handleBookIdChange(newId) {
-    setBookId(newId);
-  }
-
-  function handleBookNameChange(event) {
-    setBookName(event.target.value);
-  }
-
-  function handleChangeRadioValue(event) {
-    setRadioValue(event.target.value);
-  };
 
   async function handleFavoriteList(id, key) {
     let response;
-    const isAdd = !(bookData[key].isFavorite);
+    const isAdd = !(books[key].isFavorite);
 
     if (isAdd) {
       response = await _addFavoriteList({ userId, bookId: id });
-      bookData[key].isFavorite = true;
-      setFavoriteBooks([
-        ...favoriteBooks,
-        bookData[key].id
-      ]);
     } else {
       response = await _removeFavoriteList({ userId, bookId: id });
-      bookData[key].isFavorite = false;
-
-      const newFavoriteBooks = favoriteBooks.filter((bookId) => {
-        return bookId !== bookData[key].id;
-      })
-
-      setFavoriteBooks(newFavoriteBooks);
     }
 
     if (!response.successful) { // Not successful
-      bookData[key].isFavorite = !(bookData[key].isFavorite);
       const config = {
         description: 'An error is occured while handling favorite lists!',
         duration: 4.5,
@@ -258,37 +285,38 @@ export default function BookList() {
       }
 
       notification.error(config);
+
       return;
     }
 
-    const newContent = [...bookData];
-    setBookData(newContent);
+    if (isAdd) {
+      books[key].isFavorite = true;
+      setFavoriteBooks([
+        ...favoriteBooks,
+        books[key].id
+      ]);
+    } else {
+      books[key].isFavorite = false;
+      const newFavoriteBooks = favoriteBooks.filter(bookId => bookId !== books[key].id);
+      setFavoriteBooks(newFavoriteBooks);
+    }
+
+    const newContent = [...books];
+    setBooks(newContent);
   }
 
   async function handleReadList(id, key) {
     let response;
-    const isAdd = !(bookData[key].isRead);
+    const isAdd = !(books[key].isRead);
 
     if (isAdd) {
       response = await _addReadList({ userId, bookId: id });
-      bookData[key].isRead = true;
-      setReadBooks([
-        ...readBooks,
-        bookData[key].id
-      ]);
     } else {
       response = await _removeReadList({ userId, bookId: id });
-      bookData[key].isRead = false;
 
-      const newReadBooks = readBooks.filter((bookId) => {
-        return bookId !== bookData[key].id;
-      })
-
-      setFavoriteBooks(newReadBooks);
     }
 
     if (!response.successful) { // Not successful
-      bookData[key].isRead = !(bookData[key].isRead);
       const config = {
         description: 'An error is occured while handling read lists!',
         duration: 4.5,
@@ -301,17 +329,29 @@ export default function BookList() {
       return;
     }
 
-    const newContent = [...bookData];
-    setBookData(newContent);
+    if (isAdd) {
+      books[key].isRead = true;
+      setReadBooks([
+        ...readBooks,
+        books[key].id
+      ]);
+    } else {
+      books[key].isRead = false;
+      const newReadBooks = readBooks.filter(bookId => bookId !== books[key].id);
+      setFavoriteBooks(newReadBooks);
+    }
+
+    const newContent = [...books];
+    setBooks(newContent);
   }
 
   async function handleBookSearchById() {
-    if (bookId < 0) {
+    if (bookId <= 0) {
       const config = {
-        description: 'Check Book ID! Book ID should be greater than or equal to 0!',
+        message: 'Check Book ID!',
+        description: 'Check Book ID! Book ID should be greater than 0!',
         duration: 4.5,
         key: 'handle-book-search-by-id-warning',
-        message: 'Check Book ID!',
         placement: 'top'
       }
 
@@ -323,25 +363,23 @@ export default function BookList() {
     const response = await _searchBookById({ bookId });
 
     if (!response.successful) {
-      setBookData([]);
-
       const config = {
+        message: 'Book is not found!',
         description: 'Book could not be found! Check book id and try again!',
         duration: 4.5,
         key: 'handle-book-search-by-id-error',
-        message: 'Book is not found!',
         placement: 'top'
       }
 
       notification.error(config);
 
+      setBooks([]);
       return;
     }
 
-    const newContent = BookContentParserWithUserListInfo(response, favoriteBooks, readBooks);
+    const newContent = BookContentParserWithUserListInfo(response.content, favoriteBooks, readBooks);
 
-    setBookData(newContent);
-    setIsSearchAll(false);
+    setBooks(newContent);
     setPagination({
       ...pagination,
       current: response.pageable.pageNumber + 1,
@@ -354,10 +392,10 @@ export default function BookList() {
   async function handleBookSearchByName() {
     if (bookName == null || bookName === "") {
       const config = {
+        message: 'Check Book Name!',
         description: 'Check Book Name! Book name should be provided!',
         duration: 4.5,
         key: 'handle-book-search-by-name-error',
-        message: 'Check Book Name!',
         placement: 'top'
       }
 
@@ -366,28 +404,26 @@ export default function BookList() {
       return;
     }
 
-    const response = await _searchBooksByName({ bookName });
+    const response = await _searchBooksByName({ bookName, pagination });
 
     if (!response.successful) {
-      setBookData([]);
-
       const config = {
+        message: 'Book is not found!',
         description: 'Book could not be found! Check book name and try again!',
         duration: 4.5,
         key: 'handle-book-search-by-name-error',
-        message: 'Book is not found!',
         placement: 'top'
       }
 
       notification.error(config);
 
+      setBooks([]);
       return;
     }
 
-    const newContent = BookContentParserWithUserListInfo(response, favoriteBooks, readBooks);
+    const newBooks = BookContentParserWithUserListInfo(response.content, favoriteBooks, readBooks);
 
-    setBookData(newContent);
-    setIsSearchAll(false);
+    setBooks(newBooks);
     setPagination({
       ...pagination,
       current: response.pageable.pageNumber + 1,
@@ -399,68 +435,21 @@ export default function BookList() {
 
   return (
     <>
-      <Radio.Group
-        options={options}
-        onChange={handleChangeRadioValue}
-        value={radioValue}
-        optionType="default"
+      <BookSearch
+        bookId={bookId}
+        setBookId={setBookId}
+        handleBookSearchById={handleBookSearchById}
+        bookName={bookName}
+        setBookName={setBookName}
+        handleBookSearchByName={handleBookSearchByName}
+        radioValue={radioValue}
+        handleRadioValueChange={handleRadioValueChange}
       />
-      <div className='search-forms'>
-        <Row>
-          {
-            radioValue === 'Search Book By ID' ?
-              <Col span={12}>
-                <Form
-                  onFinish={handleBookSearchById}
-                  onFinishFailed={() => console.log("Failed in Search Book By Id!")}
-                >
-                  <Form.Item
-                    label="Search Book By Id"
-                    rules={[{ message: 'Please input an integer greater than or equal to 0!' }]}
-                  >
-                    <InputNumber
-                      min={0}
-                      id="bookId"
-                      name="bookId"
-                      value={bookId}
-                      onChange={handleBookIdChange}
-                    />
 
-                    <Button type="primary" htmlType="submit">
-                      Search
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Col> :
-              <Col span={12}>
-                <Form
-                  onFinish={handleBookSearchByName}
-                  onFinishFailed={() => console.log("Failed in Search Book By Name!")}
-                >
-                  <Form.Item
-                    label="Search Book By Name"
-                    rules={[{ message: 'Please input book name' }]}
-                  >
-                    <Input
-                      id="name"
-                      name="name"
-                      value={bookName}
-                      onChange={handleBookNameChange}
-                    />
-
-                    <Button type="primary" htmlType="submit">
-                      Search
-                    </Button>
-                  </Form.Item>
-                </Form>
-              </Col>
-          }
-        </Row>
-      </div>
       <Table
         loading={loading}
         columns={bookColumns}
-        dataSource={bookData}
+        dataSource={books}
         pagination={pagination}
         onChange={handleTableChange}
       />

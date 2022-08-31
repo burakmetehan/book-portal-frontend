@@ -28,8 +28,6 @@ export default function UpdateUser() {
   // isSearch makes use of the fact that '0: false, others: true'
   const [isSearch, setIsSearch] = useState(0);
 
-  const notRenderPaginationEffect = useRef(true);
-
   /* ========== Use Effect Functions ========== */
   useEffect(() => {
     async function searchAllBooks() {
@@ -95,11 +93,6 @@ export default function UpdateUser() {
       setIsSearch(0);
     }
 
-    if (notRenderPaginationEffect.current) {
-      notRenderPaginationEffect.current = false;
-      return;
-    }
-
     if (!isSearch) {
       return;
     }
@@ -118,7 +111,7 @@ export default function UpdateUser() {
     setPagination(PAGINATION);
     setIsSearch(prev => prev + 1);
     setRadioValue(event.target.value);
-  };
+  }
 
   function handlePaginationChange(current, pageSize) {
     setPagination({

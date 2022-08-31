@@ -32,8 +32,15 @@ export function BookContentParser(content) {
   return newContent;
 }
 
-export function BookContentParserWithUserListInfo(response, favoriteBooks, readBooks) {
-  const newContent = response.content.map((book, index) => {
+/**
+ * 
+ * @param {Object} content Content of the paged response
+ * @param {Array} favoriteBooks Array of ids of favorite books
+ * @param {Array} readBooks Array of ids of read books
+ * @returns parsed content list
+ */
+export function BookContentParserWithUserListInfo(content, favoriteBooks, readBooks) {
+  const newContent = content.map((book, index) => {
     return ({
       ...book,
       key: index,
