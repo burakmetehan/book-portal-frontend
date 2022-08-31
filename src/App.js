@@ -1,11 +1,9 @@
+import { BookOutlined, HomeOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
+import { Layout, Menu, Popconfirm } from "antd";
+import "antd/dist/antd.css";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
-
-import { BookOutlined, HomeOutlined, LogoutOutlined, UserOutlined } from "@ant-design/icons";
-import { Layout, Menu, Popconfirm } from "antd";
-
-import "antd/dist/antd.css";
 
 import Login from "./pages/auth/Login";
 import Book from "./pages/book/Book";

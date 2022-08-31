@@ -8,7 +8,7 @@ import {
 
 import { _searchUserByUsernameList, _updateUser } from "../service/UserService";
 
-import { BOOK_COLUMNS, PAGINATION } from "../globals/GlobalVariables";
+import { BOOK_COLUMNS } from "../globals/GlobalVariables";
 
 const { Content } = Layout;
 const { Panel } = Collapse;
