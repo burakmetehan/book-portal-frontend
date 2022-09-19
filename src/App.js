@@ -95,7 +95,7 @@ export default function App() {
                   </Menu.Item>
                   <Menu.Item key="logout">
                     <Popconfirm
-                      title="Are you sure to delete this task?"
+                      title="Are you sure to logout?"
                       onConfirm={onLogout}
                       onCancel={() => { }}
                       okText="Yes"
